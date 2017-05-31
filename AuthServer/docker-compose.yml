@@ -1,0 +1,19 @@
+spring-server:
+  build: .
+  ports:
+    - "3000:3000"
+  links:
+    - mysqldb
+  volumes:
+    - .:/src
+  command: mvn spring-boot:run
+
+mysqldb:
+  image: mysql:latest
+  environment:
+    - MYSQL_ROOT_PASSWORD=1234
+    - MYSQL_DATABASE=auth-server-db
+  expose:
+    - "3306"
+  ports:
+    - "3306:3306"

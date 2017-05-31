@@ -1,0 +1,55 @@
+\def\mscdate{2017/02/15}
+\def\mscversion{1.0}
+\NeedsTeXFormat{LaTeX2e}
+%\ProvidesPackage{scenarios}[\mscdate, v\mscversion]
+
+%Package requirement
+\RequirePackage{
+    courier,
+    calc,
+    tabu,
+    xspace,
+    longtable,
+    environ,
+    ifthen,
+    enumitem
+}
+
+
+
+\newcommand{\events}[1]{
+    \textit{Flow of events} &
+    \vspace{-3mm}
+    \begin{enumerate}[leftmargin=*,topsep=0pt,itemsep=-1ex]
+      #1
+    \end{enumerate}\\
+    \hline
+}
+
+\newcommand{\event}[1]{\item #1}
+\newcommand{\row}[2]{
+    \textit{#1} & #2\\
+    \hline
+}
+
+\environbodyname\scenarioBODY
+\NewEnviron{scenario}[3]
+{
+    \begin{table}[p]
+        \centering
+        \begin{wide}
+        \tabulinesep=3mm
+        \begin{tabu} to \linewidth {p{4cm} X}
+            \tabucline[1.25pt]-
+            \textit{Scenario name} & #1\\
+            \hline
+            
+            \scenarioBODY
+            
+            \tabucline[1.25pt]-
+        \end{tabu}
+        \ifthenelse{\equal{#2}{}}{\caption{}}{\caption{#2}}
+        \ifthenelse{\equal{#3}{}}{}{\label{sc:#3}}
+        \end{wide}
+    \end{table}
+}

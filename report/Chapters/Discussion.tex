@@ -1,0 +1,214 @@
+%************************************************
+\chapter{Discussion}\label{ch:discussion}
+%************************************************
+
+\section{Security Assumptions and Attacks} \label{sec:attacks}
+
+In the security analysis, we analyzed the proposed protocol and showed that the protocol has an injective agreement in the presence of adversaries capable of \textit{Internal Observation}. However, we also showed that if an adversary is capable of \textit{Strong Internal Observation}, then he can mount an attack as shown in figure~\ref{fig:attacks}.
+
+So far we have not discussed the implications of this attack. Most realistically this attack can be mounted by compromising the \gls{authenticator}, as this will give the adversary access to both the key, and the communication to the \gls{sibling}. With control of the network, the adversary can send packages to the \gls{sibling} and make it partially decrypt selected ciphers.
+
+\begin{figure}[bth]
+    \centering
+
+    %\begin{wide}
+    \begin{minipage}[c]{0.49\linewidth}
+    \resizebox{\linewidth}{!}{
+    \begin{msc}{Authenticator compromised}
+    
+    \setlength{\instdist}{1.7cm}
+    \setlength{\envinstdist}{1.7cm}
+    \setlength{\actionwidth}{3cm}
+    
+    \declinst{as}{$\left\{sk_{As}\right\}$}{$As$} 
+    \declinst{a}{}{$\mathcal{A}$} 
+    
+    \nextlevel
+    
+    \mess*{$\left\{c\right\}$}{envright}{a}
+    \nextlevel
+    
+    \action{$sk_A = LtkReveal(A)$}{a}
+    \nextlevel[4]
+    
+    \mess{$\left\{c\right\}$}{a}{as}
+    \nextlevel
+    \action{$c'_{As} = Dec'(c,sk_{As})$}{as}
+    \action{$c'_{A} = Dec'(c,sk_{A})$}{a}
+    \nextlevel[5]
+    \mess{$\left\{c'_{As}\right\}$}{as}{a}
+    \nextlevel
+    \action{$n' = c'_A \times c'_{As}$}{a}
+    \nextlevel[3]
+    \mess*{$\left\{n'\right\}$}{a}{envright}
+    \end{msc}}
+    \end{minipage}
+    %
+    \begin{minipage}[c]{0.49\linewidth}
+    \resizebox{\linewidth}{!}{
+    \begin{msc}{Sibling compromised}
+    
+    
+    \setlength{\instdist}{1.7cm}
+    \setlength{\envinstdist}{1.7cm}
+    \setlength{\actionwidth}{3cm}
+    
+    \declinst{as}{}{$\mathcal{A}$} 
+    \declinst{a}{$\left\{sk_{A}\right\}$}{$A$} 
+    \nextlevel
+    
+    \mess*{$\left\{c\right\}$}{envright}{a}
+    \nextlevel
+    
+    \mess{$\left\{c\right\}$}{a}{as}
+    \nextlevel
+    
+    \action{$sk_{As} = LtkReveal(As)$}{as}
+    \nextlevel[4]
+    
+    \action{$c'_{As} = Dec'(c,sk_{As})$}{as}
+    \action{$c'_{A} = Dec'(c,sk_{A})$}{a}
+    \nextlevel[5]
+    
+    \mess{$\left\{c'_{As}\right\}$}{as}{a}
+    \nextlevel
+    
+    \action{$n' = c'_A \times c'_{As}$}{a}
+    \nextlevel[3]
+    
+    \mess*{$\left\{n'\right\}$}{a}{envright}
+    \end{msc}}
+    \end{minipage}
+    %\end{wide}
+    \caption[Sequence diagrams of known attacks]{The known attacks by adversaries capable of Strong Internal Observation}
+    \label{fig:attacks}
+\end{figure}
+
+So what does the adversary gain from this attack? The response to a challenge could be obtained much easier by eavesdropping the plain-text nonce when it is sent from \gls{authenticator} to the \gls{client} and then to the \gls{server}. Furthermore, the user is still able to stop further authentications by removing the \gls{sibling} from the \glspl{authenticator} proximity, or simply turning it off.
+
+This is proven as: For all successful rounds of authentications, if an adversary is limited to a proper subset of keys, then either the \gls{authenticator} or \gls{sibling} was involved in the authentication run (as defined in section~\ref{sec:involvement}).
+
+This is an important property as, even if some subset of devices are compromised, then the user retains the ability to stop all current and future authentications by turning off the device, or putting the device on lockdown. Recall that this was one of the scenarios presented in the design (see table~\ref{sc:theft}).
+
+However, a more severe consequence of the attack; In the protocol design session we stated that hijacking a session should not give an adversary unauthorized access for longer than the session is actively kept alive by the \gls{authenticator} and \gls{server}. The attack would violate this goal as it allows the adversary to omit the \glspl{authenticator} logic and keep a session alive even after the \gls{authenticator} is locked (e.g. if it is not worn). Furthermore, if the adversary can compute the response to a challenge, and thus omit user-awareness, explicit consent and other checks and bounds implemented on the authentication, then it undermines many of the user-oriented security features that our design presents.
+
+In the current version of the protocol, no messages sent are authentic. As we have shown that the known attacks can be mitigated by having authentic communication, future work should include to further analyze and extend the protocol to have message authenticity.\\
+
+In the security analysis, registration is assumed to be an atomic operation. This is, of course, not the case in practice. The registration is, as most key-exchanges are, vulnerable to man-in-the-middle attacks. Password-based authentication also suffers from this problem, and a common fix is to use secure channels such as HTTPS.
+However, for our protocol, securing the communication between \gls{client} and \gls{server} with HTTPS, only partly mitigates the attack surface. It is left for future work to analyze and prevent man-in-the-middle attacks between \gls{client}, \gls{authenticator} and \gls{sibling} during registration.
+
+% An implication of this definition is that a device is either acting or not acting in a run of the protocol. In practise, an adversary could also compromise the device, and not be able to obtain the key, but instead e.g. always accept explicit consent request without any user interaction. This could lead to attacks, but is not entailed by the model. This will be revisited in the discussion.
+
+\section{Confidence in Tamarin}
+
+As we pointed out both in this chapter and in the security analysis, two strategies for compromising the protocol are known. Both attacks assume that an adversary is capable of \textit{Strong Internal Observation}, and is thus able to compromise the keys of one actor, and to break message authenticity and secrecy. The two attacks are shown in figure~\ref{fig:attacks}. 
+
+While both attacks can be mounted by adversaries capable of \textit{Strong Internal Observation}, and thus disprove proposition~\ref{proposition:forge-rev-in} in our computational model, we have discovered that Tamarin does not find the second attack where the attack is mounted by compromising the key of the \gls{sibling}. 
+
+Although the adversary has all the knowledge and rules available to mount the attack; it does not discover the attack unless a rule explicitly stating the strategy is given in the model
+\begin{align*} 
+&& In(c),~In(x),~In(p) \ifarrow Out(comb(pdec(c,x), p)) 
+\end{align*}
+
+It should be clear from the rule that an adversary with the information necessary to invoke the rule,
+\begin{align*}
+    %pk &= comb(pk(x), pk(y)) && (\text{from register}) \\
+    c &= enc(n, pk) && (\text{from  server-init}) \\
+    p &= pdec(c,y) && (\text{from sibling})\\
+    x & && (\text{from reveal})
+\end{align*}
+with $pk = pk(plus(x,y))$, should already be to able obtain $n$ given our equational theory.
+\begin{align*}
+&    dec(enc(m,pk(sk)), sk) \simeq m\\
+&    comb(pdec(c,x), pdec(c,y)) \simeq dec(c,pk(plus(x,y)))
+\end{align*}
+
+However, the attack is only found if the rule is explicitly present in the model. We have been in contact with the developer of Tamarin who confirms that it seems to be a bug in the tool\footnote{\url{https://github.com/tamarin-prover/tamarin-prover/issues/216}}. 
+
+This naturally lead us to question the validity of the proofs given in section~\ref{sec:tamarin}. We are, even considering the bug, confident that the given theorems of unforgeability and injective agreement holds. However, we suggest for future work to prove the theorems with a different tool or model to obtain certainty hereof.
+
+
+
+\section{Trusted Input, Output and Computations}
+
+In the security analysis we proved that the protocol achieves unforgeability in the presence of \textit{Strong External Observation}, and as such, if an adversary can not obtain any of the secret keys, then unforgeability is proven. So can we make an implementation where we can reasonably assume that adversaries are only capable of \textit{Strong External Observation}?
+
+A way to ensure the secrecy of the keys is to use TPM. In his thesis \citet{bentzon2013security} showcases an implementation of Pico that mitigates the risk of the Pico being compromised in an unlocked state by using a Trusted Platform Module (TPM), which are small special purpose hardware chips that allow for compartmentalization, as both keys and cryptographic calculations can be carried out in separation from the operating system.
+
+TPM modules are standard in most commodity devices such as laptops and phones, and using a TPM for storing the keys and performing the cryptographic calculations is an effective means of mitigating the risk of compromised devices.
+
+However, as hinted previously, a flaw in the way we modeled and proved our protocol is that the definition of an actors involvement is too binary. In practice, we have so far been assuming trusted input and output. This means we assume that if the authenticator acted, then user-awareness, explicit-consent and other checks and bounds was actually performed. However, even if an adversary is not able to compromise the secrets of the system, he might be able to compromise the user in- and output. As we have already explained above, this can have serious ramifications for the user-oriented security features of our scheme. 
+
+We therefore suggest for future work to include exploring how trusted input, -output and -computations can be used to mitigate the risk of attacks.
+
+\section{Number of Siblings}
+
+The concept of siblings is crucial to our design as it mitigates the risk of both theft and compromised devices. By splitting the secrets onto multiple devices, we make it more difficult for an adversary to mount an attack. 
+
+The concept originates from the Pico~\cite{stajano2011pico, stannard2012good}. However, in contrast to our design, multiple siblings are suggested. This lead us to an interesting discussion point: How many devices should the user be obligated to have in his vicinity?
+
+\citet{stajano2011pico} suggests that siblings could be items such as glasses, belts, wallets, jewelry and possible implants. Our design choice of using only one sibling stems from a practical consideration. Forcing the user to always have both watch and smartphone present when authenticating is already a significant trade-off.
+
+However, we do see the potential in having the number of siblings as a variable parameter of security. In fact, our protocol naturally supports having more than one sibling as Distributed ElGamal works for any number of participant, and the scheme could easily be extended to allow more siblings.\\
+
+Pico uses a $k$-out-of-$n$ threshold encryption scheme allowing a user to authenticate even though some siblings are not present. There are multiple interesting aspects to this: there is the natural benefit of allowing the user to forget one of multiple devices, but even more interestingly it could be used as a recovery mechanism where if the user losses e.g. one out of two siblings in a 2-out-of-3 system, then still having the majority of devices could allow the user to replace a lost device.
+
+Our current use of Distributed ElGamal enforces that all devices are bound to participate. However, Distributed ElGamal can quite elegantly be extended to a $k$-out-of-$n$ threshold encryption system by choosing a joint private-key $x$, and then dealing it into several shares $x_1, ..., x_n$ with Shamir's secret sharing scheme~\cite{shamir1979share}. This would allow for computing partial decryptions as we already do, but only needing $k$-out-of-$n$ shares to recover the message~\cite[page 506]{katz2014introduction}.
+
+\section{Recovery Problem}\label{sec:recovery}
+The current design of our scheme does not include any proper solution to how a user can recover from a loss of a \gls{sibling} or \gls{authenticator}. As described in the user scenario for theft and loss (\ref{sc:theft}), we envision that a user can initiate a lockdown state, if either of his devices gets stolen or lost. The lockdown state will render both devices useless, until the lockdown state is explicitly canceled by the user, in the event that the lost device resurfaces. However, this idea only considers the case where \textit{one} of the devices is lost, and what happens if the lost device never resurfaces? Surely some recovery mechanism must be put in place that allows replacement of the lost or stolen devices, so that the user can regain control of his web service accounts. The challenge of designing such a mechanism is to make sure that only the legitimate user is allowed to perform recovery. Obviously, it would be catastrophic if an attacker could abuse the recovery process, to gain access and lock out a legitimate user. 
+
+We believe that we have yet to discover the ideal solution for this problem if any such exists. Taking inspiration from Pico's solution to this problem \cite{stajano2011pico}, we have considered the concept of a recovery docking station, that can be placed at the user's home. When the \gls{authenticator} and \gls{sibling} are physically plugged into the dock, all the cryptographic keys contained on the devices are transferred onto the docking station, to be used for recovery later. This way it will be fairly easy, for a user to perform recovery once he is at the recovery station. However, this solution is still problematic in the case where both devices are lost or stolen, since a thief in possession of two stolen devices now has the required equipment to perform authentication. 
+One solution to this problem could be to introduce a trusted third party, in the form of a centralized server, that basically acts as a second \gls{sibling}. The \gls{authenticator} would then have to contact the third party and request a partial decryption from it, in order to successfully authenticate with the \gls{server}. The \gls{authenticator} must sign its request, such that the third party can verify that the request is coming from the \gls{authenticator} carried by the legitimate user. Introducing a third party makes it easier to perform lockdown for a user, if both his \gls{authenticator} and \gls{sibling} is lost. If a user performs recovery, the third party can then be instructed to only answer requests from the new \gls{authenticator} used for recovery, instead of the stolen or lost \gls{authenticator}. 
+
+To make sure that it actually is the legitimate user who performs this recovery process, a text- or QR-code could be stored on the recovery station, which must be supplied to the trusted third party, before it can be instructed to answer requests from a new \gls{authenticator}.
+In order to view this code or transfer the backup keys onto a new device, the recovery station could, for instance, be protected with a PIN code or a fingerprint scanner. 
+
+At this point, it should be obvious that the problem of recovery is not trivial to solve. While a solution such as the one described above could make recovery viable, it is still far from ideal, as it introduces a new weakest link in the scheme (stealing the recovery station), and furthermore increases the overall cost of deployment, due to the manufacturing cost of the recovery station, and the server maintenance expenses from using a trusted third party.
+
+\section{Reflecting on Evaluation Results}
+The evaluation results of the proposed design (figure~\ref{table:property_table}) indicate that the scheme generally performs very well in both security and usability aspects. The main concern in the usability area when compared with related schemes, is that our design does not entail a solution for recovery in case of loss. This problem is discussed above in section~\ref{sec:recovery}. In the area of security, the most significant shortcoming is the lack of full \textit{Resilience-to-Internal-Observation}. This issue is discussed in both chapter~\ref{ch:security} and above in section~\ref{sec:attacks}.
+Comparing our proposed authentication scheme with passwords, which is the scheme that is ultimately the target for replacement, we notice the significant lack of provided deployability benefits. As already explained in section~\ref{sec:why} one of the main reasons why passwords have not been replaced on a global scale, is because of its maturity, the fact that it is nearly cost free, and the enormous dependency that exists on passwords in current browser and server infrastructures. In other words it is deployability properties.
+
+With this thesis, we have clearly stated that the proposed scheme is intended as a password replacement. One could therefore rightfully ask why we design the scheme with such small emphasis on deployability, if the lack of deployability is so detrimental to a schemes chance of being widely adopted or contesting passwords in any way. 
+The short answer is that full browser and server compatibility is basically only possible to achieve, if the scheme is an abstraction over passwords, such as password managers or a supplement to passwords such as two-factor authentication methods. These solutions have the drawback, that in the end, the weakest link will still be passwords, and such solutions therefore still inherit several of the undesirable security issues that passwords entail. 
+
+We strongly believe that a clean-slate solution is the only way to get completely rid of passwords and achieve optimal security and usability simultaneously. We realize this comes at the significant cost of changes to many browser and server implementations. However, when implementing our prototype, we discovered that it was actually possible to reduce a number of changes needed on both servers and browsers to some extent (see section~\ref{sec:prot_eval}). As many servers are already using a token authentication system, it is possible to only substitute the part of server implementation that issues tokens, and keep the rest of the infrastructure intact. Furthermore, the recent advancements in the compatibility of Bluetooth GATT Service in browsers, enables our scheme to work without implementation changes to browsers. 
+
+While the scheme we propose may require some implementation changes to existing infrastructure, and a more broad adoption of wearable devices, it still provides major improvements in almost all other aspects compared to passwords.
+
+
+
+\begin{comment}
+\begin{itemize}
+    \item Design discussion points:
+        \begin{itemize}
+            \item Recovery from loss
+            \item How good are the properties actually for evaluation? (problems with the framework). 
+            \item Comment on evaluation results of design. (lack of deployability benefits)
+        \end{itemize}
+    \item Prototype discussion points:
+        \begin{itemize}
+            \item Potential security vulnerabilities
+            \item Verify issued tokens on authenticator?
+            \item GATT service problems/limitations (mention why we use phone as authenticator)
+            \item other technical challenges
+            \item comment on evaluation results of prototype (overall satisfaction with prototype)
+        \end{itemize}
+    \item Protocol:
+        \begin{itemize}
+            \item TPM's can be used to secure keys
+            \item Number of siblings
+            \item Partial vs. Threshold encryption
+            \item Message integrity
+                \begin{itemize}
+                    \item An authenticator might be fooled into thinking he is authenticated with a given service. (Also because there is no response from the server)
+                    \item Authenticity between sibling and authenticator.
+                \end{itemize}
+            \item Registration is vulnerable to M-I-M.
+        \end{itemize}
+\end{itemize}
+\end{comment}
+
+% todo
+% - 

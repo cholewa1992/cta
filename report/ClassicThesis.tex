@@ -1,0 +1,262 @@
+% **************************************************************************************************************
+% A Classic Thesis Style
+% An Homage to The Elements of Typographic Style
+%
+% Copyright (C) 2015 André Miede http://www.miede.de
+%
+% If you like the style then I would appreciate a postcard. My address 
+% can be found in the file ClassicThesis.pdf. A collection of the 
+% postcards I received so far is available online at 
+% http://postcards.miede.de
+%
+% License:
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; see the file COPYING.  If not, write to
+% the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+% Boston, MA 02111-1307, USA.
+%
+% **************************************************************************************************************
+\RequirePackage{fix-cm} % fix some latex issues see: http://texdoc.net/texmf-dist/doc/latex/base/fixltx2e.pdf
+\documentclass[ 
+    %draft,
+    openright,
+    titlepage,
+    numbers=noenddot,
+    headinclude,
+    %1headlines,
+    %letterpaper a4paper
+    %footinclude=true,
+    cleardoublepage=empty,
+    abstractoff, % <--- obsolete, remove (todo)
+    BCOR=5mm,
+    paper=a4,f
+    ontsize=11pt,%11pt,a4paper,%
+    american,%
+    twoside
+    ]{scrreprt}
+
+%********************************************************************
+% Note: Make all your adjustments in here
+%*******************************************************
+
+\input{classicthesis-config}
+%\usepackage[inline]{enumitem}
+
+\usepackage{calc}
+\usepackage{todonotes}
+\usepackage{verbatim}
+\usepackage[htt]{hyphenat}
+\usepackage[ruled]{algorithm2e}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage[acronym]{glossaries}
+\usepackage{cancel}
+\usepackage[strict]{changepage}
+\usepackage{scrextend}
+\usepackage{rotating}
+\usepackage{pdflscape}
+\usepackage{tkz-fct}
+
+
+\newcommand*\rot{\rotatebox{90}}
+
+
+\newcommand{\fquotet}[2]{
+\vspace{10pt}
+\begin{addmargin}[4em]{0em}
+%    \begin{quote}
+        {\slshape #1} 
+        \vspace{0.25em}
+        \flushright{---~\citet{#2}}
+%    \end{quote}
+\end{addmargin}
+\vspace{10pt}
+}
+
+
+\newcommand{\IfOddPage}[2]{%
+  \checkoddpage
+  \ifoddpage\expandafter #1
+  \else\expandafter #2 \fi}
+\newcommand\raggedout{\IfOddPage{\raggedright}{\raggedleft}}
+\newcommand\raggedin{\IfOddPage{\raggedleft}{\raggedright}}
+
+\newenvironment{wide}{%
+  \begin{adjustwidth*}{0pt}{-\marginparsep-\marginparwidth}
+    \raggedout
+}{%
+  \end{adjustwidth*}%
+}
+
+%\newenvironment{wide}{%
+%  \begin{adjustwidth*}{-3.7em}{-3.7em}
+%    \raggedout
+%}{%
+%  \end{adjustwidth*}%
+%}
+
+\usepackage{sty/msc}
+\usepackage{sty/scenarios}
+
+\usepackage{amsthm}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{collary}[theorem]{Collary}
+
+\renewcommand\qedsymbol{$\blacksquare$}
+%\setlength{\mathindent}{0pt}
+
+\newcommand{\plet}[1]{let~{#1}~in}
+\newcommand{\ifarrow}[1][]{\ifthenelse{\equal{#1}{}}{\rightarrow}{{~-\hspace{-2.5pt}[}~#1~{]\hspace{-4.6pt}\rightarrow}~}}
+
+\newcommand{\kfrsh}{\text{\~{}}}
+
+% Define Colors
+\usepackage{color}
+\usepackage{courier}
+\definecolor{commentgreen}{RGB}{2,112,10}
+\definecolor{eminence}{RGB}{108,48,180}
+\definecolor{weborange}{RGB}{181 54,26}
+\definecolor{frenchplum}{RGB}{129,20,83}
+
+\lstdefinelanguage{spthy}
+{
+    % list of keywords
+    otherkeywords={
+       functions, equations, rule, lemma, --[, ]->, -->, :, exists-trace, \", begin, end, theory
+    },
+    emph={All, Ex, &, |, ==>, dec,enc,pdec,transform, comb, plus, pk, =},
+    emphstyle={\color{eminence}},
+    sensitive=false, % keywords are not case-sensitive
+    morecomment=[l]{//}, % l is for line comment
+    morecomment=[s]{/*}{*/}, % s is for start and end delimiter
+    morestring=[b]' % defines that strings are enclosed in double quotes
+}
+
+\lstset{
+    basicstyle=\small\ttfamily, % Global Code Style
+    numberstyle=\small\ttfamily, % style of the line numbers
+    captionpos=b, % Position of the Caption (t for top, b for bottom)
+    extendedchars=true, % Allows 256 instead of 128 ASCII characters
+    tabsize=2, % number of spaces indented when discovering a tab
+    columns=fixed, % make all characters equal width
+    keepspaces=true, % does not ignore spaces to fit width, convert tabs to spaces
+    showstringspaces=false, % lets spaces in strings appear as real spaces
+    framesep=4pt, % quarter circle size of the round corners
+    commentstyle=\color{commentgreen}, % style of comments
+    %keywordstyle=\color{weborange}, % style of keywords
+    stringstyle=\color{frenchplum}, % style of strings
+    breaklines=true,
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+    breakautoindent=true,
+    numbers=left,
+    stepnumber=1,
+}
+
+\makeatletter
+\renewcommand\chapter{\if@openright\cleardoublepage\else\clearpage\fi
+                    \thispagestyle{empty}%
+                    \global\@topnum\z@
+                    \@afterindentfalse
+                    \secdef\@chapter\@schapter}
+\makeatother
+
+%********************************************************************
+% Bibliographies
+%*******************************************************
+\addbibresource{references.bib}
+
+%********************************************************************
+% Hyphenations and Glossary
+%*******************************************************
+%\hyphenation{put special hyphenation here}
+
+\makeglossary
+\glsdisablehyper
+\input{glossary}
+
+
+% ********************************************************************
+% GO!GO!GO! MOVE IT!
+%*******************************************************
+\begin{document}
+\frenchspacing
+\raggedbottom
+\selectlanguage{american} % american ngerman
+\renewcommand*{\bibname}{References}
+%\setbibpreamble{}
+\pagenumbering{roman}
+\pagestyle{plain}
+
+
+%********************************************************************
+% Frontmatter
+%*******************************************************
+%\include{FrontBackmatter/DirtyTitlepage}
+\include{FrontBackmatter/Titlepage}
+\include{FrontBackmatter/Titleback}
+%\cleardoublepage\include{FrontBackmatter/Dedication}
+\cleardoublepage\include{FrontBackmatter/Abstract}
+\cleardoublepage\include{FrontBackmatter/Foreword}
+%\cleardoublepage\include{FrontBackmatter/Publications}
+%\cleardoublepage\include{FrontBackmatter/Acknowledgments}
+\pagestyle{scrheadings}
+\cleardoublepage\include{FrontBackmatter/Contents}
+%********************************************************************
+% Mainmatter
+%*******************************************************
+\cleardoublepage\pagenumbering{arabic}
+%\setcounter{page}{90}
+% use \cleardoublepage here to avoid problems with pdfbookmark
+\cleardoublepage
+\part{Introduction \& Related work}
+\input{Chapters/Introduction}
+\include{Chapters/Background}
+\include{Chapters/Review}
+
+\cleardoublepage
+\part{Continuous \& Transparent Authentication}
+
+\include{Chapters/Design}
+\include{Chapters/Protocol}
+\include{Chapters/Security}
+\include{Chapters/Implementation}
+
+\cleardoublepage
+\part{Discussion \& Conclusion}
+\include{Chapters/Discussion}
+\include{Chapters/Conclusion}
+
+
+\cleardoublepage\include{FrontBackmatter/Bibliography}
+
+% ********************************************************************
+% Backmatter
+%*******************************************************
+\appendix
+\cleardoublepage
+\part{Appendix}
+\include{Chapters/Appendix}
+%********************************************************************
+% Other Stuff in the Back
+%*******************************************************
+%\cleardoublepage\include{FrontBackmatter/Declaration}
+\cleardoublepage\include{FrontBackmatter/Colophon}
+% ********************************************************************
+% Game Over: Restore, Restart, or Quit?
+%*******************************************************
+\end{document}
+% ********************************************************************

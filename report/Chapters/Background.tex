@@ -1,0 +1,296 @@
+%*****************************************
+\chapter{Related Work}\label{ch:examples}
+%*****************************************
+\fquotet{Authentication denotes the process by which the identity of a user (or any subject) is verified. In this process, the user provides his claimed identity together with evidence in the form of credentials. If the authenticating system accepts the evidence, the user is successfully authenticated.}{basin2011applied}
+
+%\begin{flushright}{\slshape
+%Authentication denotes the process by which the identity of a user (or any subject) is verified.
+%In this process, the user provides his claimed identity together with evidence in the form of %credentials.
+%If the authenticating system accepts the evidence, the user is successfully authenticated.} \\ %\medskip
+%    --- \citet{basin2011applied}
+%\end{flushright}
+\bigskip
+
+\section{Authentication Schemes}
+\subsection{The Problem With Passwords}
+
+A large emphasis has historically been placed on technical aspects of security, when it comes to designing and evaluating authentication schemes.
+Obviously, it is desirable to provide secure authentication, since its entire purpose is to deny or grant access to some protected resource.
+However, when it comes to designing authentication schemes for use in practice, usability is often an overlooked factor.
+It is not uncommon that schemes, which are secure in theory, can turn out to be very insecure in practice, if user behavior is not taken into consideration.
+
+This is, in particular, true for schemes which rely on passwords.
+If a user chooses a weak password, it does not matter how secure the rest of the chain in the authentication process is.
+
+Passwords are the most common security mechanisms for end user authentication in computer systems today, and has been so, for a very long time.
+In 1979 \citet{morris1979password} showed how they were able to crack 81\% of 3000 user generated passwords, using a small dictionary only.
+ 
+With the increased computing power and much more developed tools available today, such as rainbow tables \cite{oechslin2003making} and huge databases of known passwords, it has become trivial to crack most user generated passwords.
+
+
+\citet{adams1999users} advocate the need for user-centered design when it comes to security mechanisms.
+In a field study, they investigate user behavior and authentication practices within organizations that use passwords.
+Their findings show, that stricter password policies does not necessarily make users produce stronger and more secure passwords. This can lead to bad practices, such as writing down passwords on post-it notes or composing passwords of easily acquirable personal details, such as family member names.
+
+Usage pattern such as these, will reduce security, due to how easy it would be for an attacker to acquire or guess the password.
+
+Another significant problem with passwords, is that, even if an extraordinary user is cognitively capable of remembering many different, complex and unique passwords, and replacing them regularly, research still shows that users will choose the convenience of short, weak passwords over strong and secure ones, simply to reduce the effort and time required to authenticate.
+
+\citet{weirich2001pretty} explains the concept of authentication from a user's perspective as an ``enabling task'', that is only a means to achieve the ``primary task'', which is accessing the protected resource.
+Thus the authentication process creates an overhead in getting to the ``primary task''.
+They argue that the willingness for users to behave in accordance with password practices, is small because many users do not recognize the threat of password compromisation, as being high enough to outweigh the benefits of being able to quickly type the password and being easier to remember.
+
+
+\subsection{Why Passwords Have Not Yet Been Replaced}\label{sec:why}
+
+With all problems that come with passwords, the natural question to ask is; why have passwords not been replaced, by some alternative mechanism that is more secure in practice?
+\citet{bonneau2012quest} tries to answer that question, by exploring 35 different authentication schemes from the real world, to see how they perform in comparison to passwords.
+They define 25 different properties, within the categories of usability, deployability and security, where each scheme receives a rating for each property.
+Each scheme is rated by specifying, that it can either offer the property, partially offer the property (quasi) or not offer the property.
+
+\citet{bonneau2012quest} propose that the methodology they use, and the different properties defined, can be used as a framework, for rating future schemes, to get an insight on how well it performs, in comparison to the different schemes they explored in their research.
+
+
+In addition to providing an evaluation framework, the results of the scheme ratings in the paper, also reveal some insight into the state of current authentication technologies.
+There seems to be a clear indication, that schemes with many usability properties often have fewer security properties and vice versa.
+Another interesting finding from their research, is that there actually exists alternatives to passwords, that achieve higher overall ratings in terms of both usability and security.
+However, these solutions often lack behind in deployability.
+In other words, it appears to be a non-trivial task to find an authentication scheme, that provides a lot of benefits, without missing out in some area.
+\citet{bonneau2012quest} argues that the main reason why passwords are still the most widely used authentication mechanism, is because current alternatives only offer marginal gains, which is simply not enough to transition away from passwords on a global scale, especially not considering the cost and effort it would require.
+
+
+\section{Pervasive Authentication}
+
+Pervasive Computing (also sometimes referred to as ubiquitous computing), entails the vision of computers, that are available throughout the physical environment embedded into everyday artifacts~\cite{weiser1991computer}.
+This vision is becoming more of a reality, as the number of personal portable devices we carry around with us increases more than ever.
+Many of the artifacts used in everyday life are now digital and part of the `Internet of Things', and the average user is increasingly interacting with more and more computers throughout their day, making our lives ever more connected.
+Pervasive computing is often focused on building technology that assists the user's everyday life.
+Importantly, the technology should fade away and seamlessly support the user in his primary task.
+Clearly, there is room for improvements in this regard when it comes to authentication.
+
+\fquotet{Imagine that a user would need to type in username and password on all ’pervasively’ available computers before he could start using them.
+Clearly, if the pattern of login and logout is not considered a usability problem today, it will most certainly become one in the years to come.}{bardram2003context}
+
+%While the password paradigm is still the most dominant authentication mechanism today, a lot of research into alternative authentication methods have been done in the past years.
+%Especially within the field of pervasive computing, the search for efficient and easy to use authentication methods, have been a research area for many years.
+
+
+The fact that user interaction frequency with computers increase, and you still need to verify your identity every time before you can actually use the computer for the intended purpose, does not harmonize well with how most authentication methods work today, which is all very explicit and time-consuming in terms of required user interaction.
+
+Furthermore, user authentication is not only limited to unlocking access to a client device.
+Once a user is logged into a client, it is very likely that he wants to access one or more web services, that again will require him to perform a round of authentication.
+\citet{hayashi2011diary} found that user authentication against web services, is by far the most common type of authentication in everyday usage patterns.
+
+
+Research projects within pervasive computing, aim to alleviate this problem, by providing mechanisms and technologies that allow for authentication, by requiring only a little or no user interaction at all.
+This concept is called `transparent authentication' -- it allows faster and more effortless authentication for users.
+\citet{bardram2003context} presents a proximity-based authentication scheme, which is targeted at a nomadic hospital working environment, where multiple users, use the same computers.
+In this environment, authentication is done frequently, and use of computer systems is often done in short sessions.
+The authentication scheme is based on proximity as well as a physical key-card placed in a bay at the workstation. If the location of a user in the system corresponds to the place where his key-card is used, he is authenticated.
+
+
+Their design highlights the need for \textit{proximity-based} authentication where the user can merely approach a work station and start using it.
+This allows the pediatricians to quickly access information without the need for explicit authentication.
+Secondly, they note that \textit{silent} sessions, where users seamlessly alternate being between authenticated or not, are important to the user experience.
+If you can seamlessly authenticate by approaching the workstation, then it is equally important to logout the user when vacating the machine~\cite{bardram2005trouble}.
+
+%% The above is basically what we define CTA as. There should probably be a linking sentence.
+
+\subsection{Wearable Authentication}
+
+The 2008 paper by \citet{ojala2008wearable} uses a similar approach, but with a wearable wristband used as authentication mechanism instead.
+The system is biometric based and uses a fingerprint reader, along with monitoring of heart rate and skin temperature, to continually verify that the legitimate user is in possession of, and wearing the authenticator.
+Back then wearable computers, often just referred to as wearables, were mainly just a research area within pervasive computing.
+In the last few years, it has gone from being only a research area, into being consumer products.
+\citet{bianchi2016wearable} describes how the form factor of this technology opens new possibilities and challenges in terms of security, and how wearables can be used for authentication purposes.
+Wearables are in many ways ideal for \gls{cta}, since they provide the benefit of two authentication factors: possession and inherence.
+Possession, since it is something you carry or wear, and inherence, since it can capture biometric data.
+This is possible because wearables are closely located or even attached to a user's body, which means that they can be designed to unobtrusively and continuously acquire biometric data from the user.
+Furthermore, it is possible to detect when a device is equipped and when it is removed, which provides a higher level of confidence about the user's identity, for a period of time. \cite{bianchi2016wearable} 
+
+\subsection{Possession-Based Authentication}
+
+\citet{stajano2011pico} presents a solution to replace passwords using a hardware token called \textit{Pico}.
+Pico is, the idea of, a small portable device that runs on battery, has a camera and two buttons for registering and authenticating.
+The device is wirelessly communicating with the client used by the end-user.
+When the user wants to authenticate with a service, a QR code appears on the screen.
+When the Pico reads the code the user is authenticated.
+
+
+Two features are of importance.
+Hardware tokens are prone to theft.
+To mitigate the risk Pico only unlocks in the presence of \textit{$k$-out-of-$n$} siblings.
+A sibling is a small RF-enabled wearable token that the user can carry, such as a watch, jewelry, glasses etc.
+The Pico needs to have a least $k$ siblings in its proximity to unlock, and automatically locks again if the siblings should disappear.
+Thereby the adversary would have to steal several tokens, of the individual user, to authenticate on his behalf.
+
+\subsection{\acrlong{cta}}
+Both \citet{bardram2003context} and \citet{ojala2008wearable} solutions are examples of transparent user authentication, where the traditional knowledge factor, is substituted by factors of possession and inherence, and the actions required from the user, to perform authentication is reduced\footnote{Note that we can have different degrees of transparency. Later we introduce a more fine-grained definition.}.
+Furthermore \cite{ojala2008wearable} is also an example of a continuous authentication scheme, which means that after initial verification of the user, the identity of the user is continually verified throughout the entire session of the authentication.
+In case a user's identity can no longer be correctly verified, the session should terminate in a similar manner to classic log out. In \cite{bardram2003context}, the definition of silent authentication is similar to that of continuous, with the difference that only the event of inserting and removing a key-card is monitored, and hence the user could move away from the workstation with his key-card still inserted.
+The Pico \cite{stajano2011pico} is continuous in terms of it locking if less than $k$ siblings are in its proximity, but not in terms of terminating a client's session if the Pico is locked.
+Thus it is a \textit{weaker} definition of continuous than that of  \cite{ojala2008wearable}.
+However, the latter is also limited to authenticating with a client, where Pico is authenticating with a web-service \textit{through} a client.
+
+
+
+\begin{comment}
+In this section we will outline certain
+\cite{boyd1986digital}
+\cite{rabin1998simplified}
+\cite{boneh2001method}
+\cite{boneh2002identity}
+\end{comment}
+
+\section{Cryptographic Assumptions}
+Modern cryptography relies heavily on certain mathematical assumptions. In this section we will present a few assumptions that are needed, to understand the remainder of this thesis. These definitions are taken from ``Introduction to Modern Cryptography'' by \citet{katz2014introduction}, and the following section is interchangeably quoting the textbook.
+
+\subsection{Cyclic Groups}
+Let $\mathbb{G}$ be a finite set of elements.
+A set of elements and some binary operator $\circ$ is an abelian group if~\cite[page 291]{katz2014introduction}
+\begin{itemize}
+
+    \item there is closure such that $\forall(g,h) \in \mathbb{G}, g \circ h \in \mathbb{G}$,
+    
+    \item exists an identity element $e$ such that $\forall (g) \in \mathbb{G}, e \circ g = g$,
+    
+    \item exists inverses such that $\forall (g,h) \in \mathbb{G}, g \circ h = e$,
+\end{itemize} 
+and the operator is both
+\begin{itemize}
+
+    \item associative $\left(\forall (g_1, g_2, g_3) \in \mathbb{G}, (g_1 \circ g_2) \circ g_3 = g_1 \circ (g_2 \circ g_3) \right)$,
+    
+    \item and commutative $\left(\forall (g,h) \in \mathbb{G}, g \circ h = h \circ g\right)$.
+    
+\end{itemize}
+
+\paragraph{Multiplicative Groups and Prime order groups}
+One kind of abelian group is multiplication groups.
+These groups are denoted by $\mathbb{Z}^*_n$, and is given as all elements relatively prime to $n$
+{\setlength{\mathindent}{0cm}
+\begin{align*}
+&&    \mathbb{Z}^*_n \stackrel{def}{=} \left\{ x \in \left\{1,..., n-1\right\} \bigm\vert gcd(x,n) = 1 \right\}
+\end{align*}}
+
+We say that the group is a multiplicative group, (denoted by $*$) if the operator is multiplication module $n$ ($ab \stackrel{def}{=} \left[ ab~\mathrm{mod}~n \right]$), and the identity element is $1$~\cite[page 295]{katz2014introduction}.
+
+If $n$ is prime, then $\mathbb{Z}^*_p = \big\{ 1, ..., p-1 \big\}$, as all elements less than $p$ are relatively prime to $p$. The order of such group is then given as $\lvert \mathbb{Z}^*_p \rvert = p-1$. These groups are called primer-order groups.
+
+\paragraph{Cyclic groups}\label{par:cyclic}
+We say that an element $g$ is a generator of the cyclic group $\mathbb{G}$ of order $\lvert \mathbb{G} \rvert = m$, if all elements of the group can be expressed as $\langle g \rangle = \left\{ g^0, g^1,...,g^{m-1} \right\}$, and $g^0 = g^m$~\cite[page 316]{katz2014introduction}.
+
+A cyclic group can be constructed using prime order groups. This is due, to the fact that, if the order of the finite group $\mathbb{G}$ is prime, then it is cyclic. Furthermore, all elements except for the identity element in such a group is a generator of the group~\cite[page 321]{katz2014introduction}.
+
+\begin{definition}
+Let $\mathcal{G}$ denote an algorithm that on input of a security parameter $1^n$ finds two large primes $p$ and $q$, such that $q$ divides $(p-1)$ and $\lvert\lvert q \rvert\rvert = n$, and then outputs the definition of a cyclic group $\langle \mathbb{G}, q, g \rangle$, where $g$ is the generator of the group, $q$ is the order of the group, and the group is given as
+{\setlength{\mathindent}{0cm}
+\begin{align*}
+&&   \mathbb{G} \stackrel{def}{=} \left\{ \left[ h^{(p-1)/q} ~\mathrm{mod}~p \right] \bigm\vert h \in \mathbb{Z}^*_p \setminus \left\{1\right\} \right\}
+\end{align*}}
+\end{definition}
+%A generator can be found by choosing a uniform $h \in \mathbb{Z}^*_p \setminus \left\{1\right\}$, and setting $g := \left[ h^{(p-1)/q}  \text{ mod } p \right]$.
+
+
+
+
+\subsection{The Discrete-Logarithm Assumption}
+Let $\mathcal{G}$ denote a polynomial-time group-generation algorithm \marginpar{This can be any cyclic group} that on input $1^n$, outputs a description of a cyclic group $\langle \mathbb{G}, q, g \rangle$, where $\mathbb{G}$ is the group, $q$ is the order (with $\lvert\lvert q \rvert \rvert = n$), and $g$ is the generator. For every element $h \in \mathbb{G}$ there exists a unique $x \in \mathbb{Z}_p$ \marginpar{$\mathbb{Z}_p$ is an additive group with $e = 0$.} such that $g^x = h$. The inverse operation is called the \textit{discrete logarithm} and is denoted $x = \log_g(h)$. Consider the following experiment:~\cite[page 320]{katz2014introduction}
+
+\vspace{1em}
+\noindent\textbf{The discrete-logarithm experiment $DLog_{\mathcal{A}, \mathcal{G}}(n)$:}
+\begin{enumerate}
+
+    \item Run $\mathcal{G}$ to obtain $\langle G,q,g \rangle$, where $\mathbb{G}$ is a cyclic group of order $q$ with (with $\lvert\lvert q \rvert \rvert = n$), and g is a generator of $\mathbb{G}$.
+    
+    \item Choose a uniform $h \in \mathbb{G}$.
+    
+    \item $\mathcal{A}$ is given $\mathbb{G}, q, g, h$, and outputs $x \in \mathbb{Z}_q$.
+    
+    \item The output of the experiment is defined to be $1$ if $g^x = h$, and $0$ otherwise.
+    
+\end{enumerate}
+
+\begin{definition}
+We say that the discrete-logarithm problem is hard relative to $\mathcal{G}$ if for all probabilistic polynomial-time adversaries $\mathcal{A}$ there exists a negligible function $negl$ such that %$Pr\big[ DLog_{\mathcal{A}, \mathcal{G}}(n) = 1 \big] \leq negl(n)$
+\vspace{-.5em}
+{\setlength{\mathindent}{0cm}
+\begin{align*}
+&&    Pr\big[ DLog_{\mathcal{A}, \mathcal{G}}(n) = 1 \big] \leq negl(n)
+\end{align*}}
+\end{definition}
+
+In other words; The mapping $f: \mathbb{Z}_n \rightarrow \mathbb{G}$ given by $f(a) = g^a$ is an isomorphism between $\mathbb{Z_n}$ and $\mathbb{G}$, and is easy to compute, while the inverse mapping $f^{-1}: \mathbb{G} \rightarrow \mathbb{Z}_n$ (although it exists) is infeasible to compute. This one-way behavior is fundamental in public-key cryptography. 
+
+
+\subsection{The Decisional Diffie-Hellman (DDH) Assumption}
+
+For a cyclic group $\mathbb{G}$, a generator $g \in \mathbb{G}$, and two elements $h_1, h_2 \in \mathbb{G}$, we define $DH_g(h_1, h_2) \stackrel{def}{=} g^{\log_g(h_1) \cdot \log_g(h_2)}$. If $h_1 = g^{x_1}$ and $h_2 = g^{x_2}$, then 
+\vspace{-1em}
+{\setlength{\mathindent}{0cm}
+\begin{align*}
+    && DH_g(h_1, h_2) = g^{x_1 \cdot x_2} = h_1^{x_2} = h_2^{x_1}
+\end{align*}}
+
+
+The DDH problem is, given $h_1$, $h_2$ and $h'$, to decide if $h'$ is equal to $DH_g(h_1, h_2)$, or a uniform element in $\mathbb{G}$~\cite[page 321]{katz2014introduction}.
+\begin{definition}
+We say that the DDH problem is hard relative to $\mathcal{G}$ if for all probabilistic polynomial-time adversaries $\mathcal{A}$ there is a negligible function $negl$ such that
+\vspace{-1em}
+\begin{addmargin}[-0.5em]{-0.5em} 
+{\setlength{\mathindent}{0cm}
+\begin{align*}
+\Big\lvert Pr\big[\mathcal{A}\left(\mathbb{G}, q, g, g^x, g^y, g^z \right) = 1\big] - Pr\big[ \mathcal{A}\left(\mathbb{G}, q, g, g^x, g^y, g^{xy}\right) =1  \big] \Big\rvert \leq negl(n)
+\end{align*}}
+\end{addmargin} 
+\end{definition}
+
+It follows, that if the discrete-logarithm problem is easy, then so is the DDH problem. While there is no proof of the discrete logarithm being hard, no efficient algorithm is known. %In practise this means that all elements in $\mathbb{G}$, apparent to an adversary, looks the same, making it ideal for cryptography.
+
+\subsection{The Eavesdropping Indistinguishability Experiment}
+
+\begin{definition}
+A public-key encryption scheme is a triple of probabilistic polynomial-time algorithms (Gen, Enc, Dec) such that:
+\begin{enumerate}
+
+    \item The key-generation algorithm $Gen$ takes as input the security parameter $1^n$ and outputs a pair of keys $(pk,sk)$. We refer to the first of these as the public-key and the second as the private-key. We assume for convenience that $pk$ and $sk$ each has length at least $n$, and that $n$ can be determined from $pk,sk$.
+    
+    \item The encryption algorithm $Enc$ takes as input a public-key $pk$ and a message $m$ from some message space (that may depend on $pk$). It outputs a ciphertext $c$, and we write this as $c \leftarrow Enc(m,pk)$.
+    
+    \item The decryption algorithm $Dec$ takes as input a private-key $sk$ and a ciphertext $c$, and outputs a message $m$ or a special symbol $\bot$ denoting failure. We write this as $m := Dec(c, sk)$.
+    
+\end{enumerate}
+It is required that, except possibly with negligible probability over $(pk,sk)$ output by $Gen(1^n)$, we have $Dec(Enc(m,pk),sk) = m$ for any (legal) message $m$.
+\end{definition}
+
+Encryption schemes are defined to be secure against chosen-plaintext attacks (CPA), if adversaries capable of obtaining plaintext/ciphertext pairs of its choice~\cite[page 20]{katz2014introduction}, are not able to distinguish between the encryption of two known messages.
+More formally, for a public-key encryption protocol $\Pi = (Gen, Enc, Dec)$ and an adversary $\mathcal{A}$, consider the following experiment:~\cite[page 378]{katz2014introduction}
+
+\vspace{1em}
+\noindent\textbf{The eavesdropping indistinguishability experiment $PubK^{eav}_{\mathcal{A}, \Pi}(n)$:}
+\begin{enumerate}
+
+    \item $Gen(1^n)$ is run to obtain keys $(pk,sk)$.
+    
+    \item Adversary $\mathcal{A}$ is given $pk$, and outputs a pair of equal-length messages $m_0, m_1$ in the message space.
+    
+    \item A uniform bit $b \in \{0, 1\}$ is chosen, and then a ciphertext $c \leftarrow Enc(m_b, pk)$ is computed and given to $\mathcal{A}$. We call $c$ the challenge ciphertext.
+    
+    \item $\mathcal{A}$ outputs a bit $b'$. The output of the experiment is $1$ if $b' = b$, and otherwise $0$. If $b' = b$ we say that $\mathcal{A}$ succeeds.
+    
+\end{enumerate}
+
+\begin{definition}
+A public-key encryption scheme $\Pi = (Gen, Enc, Dec)$ has indistinguishable encryptions in the presence of an eavesdropper if for all probabilistic polynomial-time adversaries $\mathcal{A}$ there is a negligible function $negl$ such that
+{\setlength{\mathindent}{0cm}
+\begin{align*}
+&& Pr\left[ PubK^{eav}_{\mathcal{A'}, \Pi}(n)  = 1 \right] \leq \frac{1}{2} + negl(n)
+\end{align*}}
+\end{definition}
+
+
+%*****************************************
+%*****************************************
+%*****************************************
+%*****************************************
+%*****************************************

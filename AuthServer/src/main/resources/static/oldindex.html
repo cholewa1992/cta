@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello WebSocket</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js></script>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js></script>
+    <script src="/app.js"></script>
+</head>
+<body>
+
+
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-12">
+            <h3>WebSocket connection:</h3>
+            <button id="connect" class="btn btn-default">Connect</button>
+            <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Authenticate:</h3>
+            <div class="form-group">
+                <label for="username">Access token:</label>
+                <input type="text" id="token_input" class="form-control" placeholder="access token...">
+            </div>
+            <button id="authenticate_button" class="btn btn-default">Authenticate</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Create User:</h3>
+            <form class="form">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" class="form-control" placeholder="username...">
+                </div>
+                <div class="form-group">
+                    <label for="key_y">y:</label>
+                    <input type="text" id="key_y" class="form-control" placeholder="y...">
+                </div>
+                <div class="form-group">
+                    <label for="key_p">p:</label>
+                    <input type="text" id="key_p" class="form-control" placeholder="p...">
+                </div>
+                <div class="form-group">
+                    <label for="key_g">g:</label>
+                    <input type="text" id="key_g" class="form-control" placeholder="g...">
+                </div>
+            </form>
+            <button id="create_user" class="btn btn-default">Create</button>
+        </div>
+        <div class="col-md-6">
+            <h3>Request challenge:</h3>
+            <form class="form">
+                <div class="form-group">
+                    <label for="rq_chal_username">Username:</label>
+                    <input type="text" id="rq_chal_username" class="form-control" placeholder="username...">
+                </div>
+            </form>
+            <button id="req_chal" class="btn btn-default">Request</button>
+            <h3>Answer challenge:</h3>
+            <form class="form">
+                <div class="form-group">
+                    <label for="ans_chal_username">Username:</label>
+                    <input type="text" id="ans_chal_username" class="form-control" placeholder="username...">
+                </div>
+                <div class="form-group">
+                    <label for="ans_chal_text">Answer:</label>
+                    <input type="text" id="ans_chal_text" class="form-control" placeholder="answer to challenge...">
+                </div>
+            </form>
+            <button id="ans_chal" class="btn btn-default">Answer</button>
+        </div>
+
+
+    </div>
+
+</div>
+</body>
+</html>

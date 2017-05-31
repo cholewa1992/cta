@@ -1,0 +1,139 @@
+theory CTA
+begin
+
+functions:
+	
+	/* Encryption */
+	enc/2, dec/2, pdec/2,
+	
+	/* Common terms */
+	comb/2, plus/2, pk/1
+
+equations:
+
+	dec(enc(m,pk(sk)),sk) = m,
+	comb(pk(~sk1),pk(~sk2)) = pk(plus(~sk1,~sk2)),
+	comb(pdec(c,sk1), pdec(c,sk2)) = dec(c,plus(sk1, sk2))
+
+rule Register:
+	let pk = comb(pk(~x), pk(~y)) in [ Fr(~x), Fr(~y) ]
+	--[ Register($Server, $Auth, $Sib) ]->
+	[
+		!Ltk($Auth, $Server, ~x),
+		!Ltk($Sib, $Server, ~y),
+		!Pk($Server, $Auth, $Sib, pk),
+		Out(pk)
+	]
+
+/* Allow the adversary to compromise private keys */
+rule RevealKey:
+	[ !Ltk(device, $Server, ~k) ]
+	--[ LtkReveal(device, $Server) ]->
+	[ Out(~k) ]
+
+/* Allow the adversary to forge authentic messages */
+rule BreakAuthenticity:
+	[ In(c) ]
+	--[ AuthenticityBroken() ]->
+	[ Secure(c) ]
+
+/* Allow the adversary to read secret messages */
+rule BreakSecrecy:
+	[ Secure(c) ]
+	--[ SecrecyBroken() ]->
+	[ Out(c) ]
+
+/* The server issues a new challenge */
+rule Server_1:
+	[ Fr(~n), !Pk($Server, $Auth, $Sib, pk) ]
+	-->
+	[ Out(enc(~n,pk)), Server(pk, ~n) ]
+
+/* The authenticator receives the challenge */
+rule Authenticator_1:
+	let c = enc(~n, pk) in
+	[ In(c) ]
+	-->
+	[ Secure(c), Authenticator($Auth, c) ]
+
+/* The sibling partly decrypts the challenge */
+rule Sibling_1:
+	[ Secure(c), !Ltk($Sib, $Server, y) ]
+	--[ Acted($Sib, c) ]->
+	[ Secure(pdec(c,y)) ]
+
+/* The Authenticator combines the two prats */
+rule Authenticator_2:
+	[ Secure(part2), Authenticator($Auth, c), !Ltk($Auth, $Server, x) ]
+	--[ Acted($Auth, c) ]->
+	[ Out(comb(pdec(c, x), part2)) ]
+
+/* The server verifies that the reponse is correct */
+rule Server_2:
+	[ In(n), Server(pk, n), !Pk($Server, $Auth, $Sib, pk)  ]
+	--[ Auth($Server, $Auth, $Sib, enc(n,pk)) ]->
+	[ ]
+
+lemma Authentication_Possible:
+	exists-trace "
+		Ex S A As c #j. Auth(S, A, As, c) @ #j
+		& not( Ex #r. LtkReveal(A,S) @ #r )
+		& not( Ex #s. LtkReveal(As,S) @ #s )
+		& not( Ex #t. AuthenticityBroken() @ #t )
+	"
+
+lemma Unforgeability_Weak_External_Observation:
+	"All S A As c #i. Auth(S,A,As,c) @ #i
+		& not( Ex #r. LtkReveal(A,S) @ #r ) 
+		& not ( Ex #s. LtkReveal(As,S) @ #s ) 
+		& not( Ex #t. AuthenticityBroken() @ #t ) 
+		& not( Ex #u. SecrecyBroken() @ #u ) ==>
+		( Ex #j. Acted(A,c) @ #j & #j < #i &
+		Ex #k. Acted(As,c) @ #k & #k < #i )
+	"
+
+lemma Unforgeability_Strong_External_Observation:
+	"All S A As c #i. Auth(S,A,As,c) @ #i
+		& not( Ex #r. LtkReveal(A,S) @ #r ) 
+		& not ( Ex #t. LtkReveal(As,S) @ #t ) ==>
+		( Ex #j. Acted(A,c) @ #j & #j < #i &
+		Ex #k. Acted(As,c) @ #k & #k < #i )
+	"
+		
+lemma Unforgeability_Weak_Internal_Observation:
+	"All S A As c #i. Auth(S,A,As,c) @ #i
+		& not( Ex #u. SecrecyBroken() @ #u )
+		& not( Ex #t. AuthenticityBroken() @ #t ) ==>
+		( ( Ex #j. Acted(A,c) @ #j & #j < #i  &  Ex #k. Acted(As,c) @ #k & #k < #i ) |
+		( Ex #r. LtkReveal(A,S) @ #r & #r < #i & Ex #t. LtkReveal(As,S) @ #t & #t < #i ) )
+	"
+
+lemma Unforgeability_Strong_Internal_Observation:
+	"All S A As c #i. Auth(S,A,As,c) @ #i ==>
+		( ( Ex #j. Acted(A,c) @ #j & #j < #i & Ex #k. Acted(As,c) @ #k & #k < #i ) |
+		( Ex #r. LtkReveal(A,S) @ #r & #r < #i & Ex #t. LtkReveal(As,S) @ #t & #t < #i ) )
+	"
+
+lemma Unforgeability_Internal_Observation:
+	"All S A As c #i. Auth(S,A,As,c) @ #i
+		& not( Ex #t. AuthenticityBroken() @ #t ) ==>
+		( ( Ex #j. Acted(A,c) @ #j & #j < #i & Ex #k. Acted(As,c) @ #k & #k < #i ) |
+		( Ex #r. LtkReveal(A,S) @ #r & #r < #i & Ex #t. LtkReveal(As,S) @ #t & #t < #i ) )
+	"
+
+lemma Unforgeability_Either_One_Acts_Or_Both_Compromised:
+	"All S A As c #i. Auth(S,A,As,c) @ #i ==>
+		( ( Ex #j. Acted(A,c) @ #j & #j < #i ) |
+		  ( Ex #k. Acted(As,c) @ #k & #k < #i ) |
+		  ( Ex #r. LtkReveal(A,S) @ #r & #r < #i & Ex #t. LtkReveal(As,S) @ #t & #t < #i ) )
+	 "
+
+lemma Client_Auth_Injective:
+	"All S A As c #i. Auth(S,A,As,c) @ #i & not( Ex #t. AuthenticityBroken() @ #t ) ==> 
+	( ( Ex #j. Acted(A,c) @ #j & #j < #i & 
+		Ex #k. Acted(As,c) @ #k & #k < #i &
+		( All r p #l. Auth(S,r,p,c) @ #l ==> #i = #l ) )
+	| ( Ex #r. LtkReveal(A,S) @ #r & #r < #i & Ex #t. LtkReveal(As,S) @ #t & #t < #i ) 
+	)
+	"
+end

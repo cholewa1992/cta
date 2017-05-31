@@ -1,0 +1,211 @@
+%************************************************
+\chapter{Protocol}\label{ch:protocol}
+%************************************************
+
+
+
+\section{Using asymmetric keys to authenticate}
+
+\paragraph{Paring Authenticator and Sibling.} Paring between a users Authenticator $S$ and it's Sibling $As$ is required before the Authenticator can be registered with a service and used to authenticate. First the parties generates and exchanges public/private keys to ensure secrecy and integrity of messages between the parties. All messages send between $A$ and $As$ in the remainder of this section are \textit{signed-then-encrypted} with the given key, and will for brevity not be notarised.
+
+\paragraph{Registering with a Service Provider.}
+First the Authenticator $A$ and it's sibling $As$ initiates the registration with the Service Provider $S$ by generating two new public/private key-pairs $\left(k_a,g^{k_a}\right)$ and $\left(k_{as},g^{k_{as}}\right)$ that will used only with the given $S$. The Authenticator now initiate the registration with a key exchange.
+
+All further communication between $A$ and $S$ will be \textit{signed-then-encryp\-ted} using the key-pairs, and will for brevity not be notarised. %The message flow is also depicted in figure~\ref{msc:registration}.
+\begin{align}
+A   &\rightarrow S      &&  \left\{g^{k_a},g^{k_{as}}\right\}
+\end{align}
+
+S now responds with an initial seed $c$ that should be used for later authentication
+\begin{align}
+S   &\rightarrow A      &&  \left\{g^{k_s}, m = c_s \cdot  \left( g^{k_{as}} \cdot g^{k_a} \right)^{k_s}\right\}\\
+A   &\rightarrow As     &&  \left\{g^{k_s}, m' = m \div {\left(g^{k_s}\right)^{k_a}}\right\}
+\end{align}
+
+The sibling $As$ thereafter decrypts $c_s = m' \div {\left(g^{k_s}\right)^{k_{as}}}$
+
+\begin{figure}
+%\begin{wide}
+\begin{msc}{Registration}
+
+\setlength{\instdist}{2.5cm}
+\setlength{\actionwidth}{2.6cm}
+
+\declinst{as}{}{$As$} 
+\declinst{a}{}{$A$} 
+\declinst{s}{}{$S$} 
+\mess{$\left\{g^{k_a},g^{k_{as}}\right\}$}{a}{s}
+\nextlevel
+\action{Generate $c_s$}{s}
+\nextlevel[3]
+\mess{$\left\{m,g^{k_s}\right\}$}{s}{a}
+\nextlevel
+\action{Compute $m'$}{a}
+\nextlevel[3]
+\mess{$\left\{m',g^{k_s}\right\}$}{a}{as}
+\end{msc}
+%\end{wide}
+\caption{}
+\label{msc:registration}
+\end{figure}
+
+\paragraph{Authentication.}
+After the registration the Authenticator $A$ and it's sibling $As$ can authenticate with the service $S$ by sending a token using their secrets $c_s$ and $k_a$. The message flow is depicted in figure~\ref{msc:authentication}.
+\begin{align}
+A   &\rightarrow S      &&  \left\{ g^{k_a}, t = \left( g^{c_s} \cdot g^{k_s} \right)^{k_a} \right\}
+\end{align}
+
+The session with $S$ will be kept alive continuously and after every successful authentication round $As$ and $S$ computes a $c' = hash(c)$ that should be used for the next round of authentication. As the secrets to compute a valid token are distributed between $A$ and $As$, $S$ is convinced that the Authenticator and it's sibling are collaborating.
+
+The service provider $S$ can verify the authenticity of the token received from the Authenticator $A$ by computing
+\begin{align*}
+check: && t \stackrel{?}{=} \left(g^{k_a}\right)^{c_s} \cdot \left(g^{k_a}\right)^{k_s}
+\end{align*}
+
+Because only the holders of either $\left(k_a,g^{c_s},g^{k_s}\right)$ or $\left(k_s,c_s,g^{k_a}\right)$ can compute a valid token, the authenticity of the token is trusted. Note that the holder of $\left(c_s,g^{k_a},g^{k_s}\right)$ cannot compute the token as
+it requires the use of discrete logarithmic in the group $g$ which is computationally hard.
+
+
+
+%\begin{align*}
+%&& \left( g^{c_s} \cdot g^{k_s} \right)^{k_a} \neq \left( g^{k_a} \cdot g^{k_s} \right)^{c_s} \neq \left( g^{c_s} \cdot g^{k_a} \right)^{k_s}
+%\end{align*}
+
+
+
+
+\begin{figure}
+%\begin{wide}
+\begin{msc}{Authentication}
+
+\setlength{\instdist}{2.5cm}
+\setlength{\actionwidth}{2.6cm}
+
+\declinst{as}{$\left\{c_s,k_{as}\right\}$}{$As$} 
+\declinst{a}{$\left\{g^{k_{as}},g^{k_{s}},k_a\right\}$}{$A$} 
+\declinst{s}{$\left\{c_s,k_{s},g^{k_a}\right\}$}{$S$} 
+\inlinestart[1.5cm][1.5cm]{exp1}{loop}{as}{s}
+\nextlevel
+\inlinestart{exp2}{opt}{a}{s}
+\nextlevel[2]
+\mess{$\left\{alive?, g^{k_s}\right\}$}{s}{a}
+\nextlevel
+\inlineend*{exp2}
+\nextlevel[2]
+\mess{$\left\{auth, g^{k_s}\right\}$}{a}{as}
+\nextlevel
+\action{compute $g^{c_s}$}{as}
+\nextlevel[3]
+\mess{$\left\{g^{k_s}, g^{c_s}\right\}$}{as}{a}
+\nextlevel
+\action{compute $h$}{a}
+\nextlevel[3]
+\mess{$\left\{g^{k_a},h\right\}$}{a}{s}
+\nextlevel
+\action{$c_{s}' = h(c_s)$}{as}
+\action{$c_{s}' = h(c_s)$}{s}
+\nextlevel[2]
+\inlineend{exp1}
+\end{msc}
+%\end{wide}
+\caption{}
+\label{msc:authentication}
+\end{figure}
+
+
+\section{Attempt 2}
+
+S now responds with a tuple of an initial seed $c$ and a shared key $k_{s,as}$ that should be used for later authentication
+\begin{align}
+S   &\rightarrow A      &&  \left\{g^{k_s}, m = (c_s,k_{s,as}) \cdot  \left( g^{k_{as}} \cdot g^{k_a} \right)^{k_s}\right\}\\
+A   &\rightarrow As     &&  \left\{g^{k_s}, m' = m \div {\left(g^{k_s}\right)^{k_a}}\right\}
+\end{align}
+
+The sibling $As$ now decrypts $(c_s,k_{s,as}) = m' \div {\left(g^{k_s}\right)^{k_{as}}}$
+
+After the registration the Authenticator $A$ and it's sibling $As$ can authenticate with the service $S$ by sending a token using their secrets $c_s$, $k_{s,as}$ and $k_a$. The message flow is depicted in figure~\ref{msc:authentication}.
+\begin{align}
+As  &\rightarrow A      &&  \left\{ c' = hash^{k_{s,as}}(c) \right\}\\
+A   &\rightarrow S      &&  \left\{ g^{k_a}, t = c' \cdot \left(g^{k_s} \right)^{k_a} \right\}
+\end{align}
+
+The service provider $S$ can verify the authenticity of the token received from the Authenticator $A$ by computing
+\begin{align*}
+check: && t \stackrel{?}{=} hash^{k_{a,s}}(c) \cdot \left(g^{k_a} \right)^{k_s}
+\end{align*}
+
+\newpage
+\section{A third attempt}
+
+
+\paragraph{Standard RSA.}
+
+A generator $GenRSA$ is ran to obtain the pair $(N,e,d)$, where 
+
+\begin{itemize}
+    \item $N$ is the product of large safe primes $p$ and $q$.
+    \
+    \item $e$ is chosen at random from $\mathbb{Z}_{\phi(N)}^*$.
+    \item $d$ is the inverse of $e$ given as $d = [e^{-1} \text{ mod } \phi(N)]$.
+\end{itemize}
+
+Let's define the functions $enc$ and $dec$ as
+\begin{align*}
+enc(m,e): && m^e \mod N\\
+dec(c,d): && c^d \mod N
+\end{align*}
+
+Such that $dec\left(enc(m,e),d\right) = m$ if and only if $d$ is the inverse of $e$.
+
+\paragraph{Mediated RSA.} Mediated RSA is similar to normal RSA with the difference that the private key $d$ is split into $n > 0$ segments.
+\begin{align*}
+&& d = \sum\limits_{i=1}^n d_i \mod \phi(N)
+\end{align*}
+
+The shares can be used for distributed decryption as the product of decryption the cipher with all shares is equal to decryption with the original decryption key.
+\begin{align*}
+&& \prod\limits_{i=1}^n& \quad c^{d_i} \equiv c^d \mod N
+\end{align*}
+
+Thus we have a schema where we can encrypt as with normal RSA, but can only decrypt if all key holders collaborate.
+
+\begin{figure}
+%\begin{wide}
+\begin{msc}{Authentication}
+
+\setlength{\instdist}{2.5cm}
+\setlength{\actionwidth}{3cm}
+
+\declinst{as}{$\left\{d_{As}\right\}$}{$As$} 
+\declinst{a}{$\left\{d_{A}\right\}$}{$A$} 
+\declinst{s}{$\left\{e\right\}$}{$S$} 
+\inlinestart[1.75cm][1.75cm]{exp1}{loop}{as}{s}
+\nextlevel[2]
+\mess{$m_1 = \left\{n\right\}$}{s}{a}
+\nextlevel
+\mess{$m_2 = \left\{n\right\}$}{a}{as}
+\nextlevel
+\action{$h = enc(n,d_{As})$}{as}
+\nextlevel[4]
+\mess{$m_3 = \left\{h\right\}$}{as}{a}
+\nextlevel
+\action{$h' = enc(n,d_{A})$}{a}
+\nextlevel[4]
+\action{$n' = h \times h' \mod n$}{a}
+\nextlevel[4]
+\mess{$m_4 = \left\{ n' \right\}$}{a}{s}
+\nextlevel
+\action{$dec(n',e) \stackrel{?}{=} n$}{s}
+\nextlevel[4]
+\inlineend{exp1}
+\end{msc}
+%\end{wide}
+\caption{}
+\label{msc:adwda}
+\end{figure}
+
+
+%*****************************************
+%*****************************************
+%*****************************************
+%*****************************************

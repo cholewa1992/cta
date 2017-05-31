@@ -1,0 +1,80 @@
+%************************************************
+\chapter{Introduction}\label{ch:introduction}
+%************************************************
+
+Authentication is a cornerstone of computer systems, and is the process by which a users identity is verified. While most areas of computing continue to evolve rapidly, the dusty old way that we authenticate with computers has not changed for decades.
+
+Usernames and passwords have their origin from back when multiple users were accessing the same mainframe and the operating systems most important job was to handle its different users and their individual files and programs. With the way we use computers today, and especially because of their now ubiquitous presence in almost everything we do, it is surprising that password-based authentication, that was originally designed for such radically different usage, is still the behemoth used practically everywhere.
+
+\fquotet{The continued domination of passwords over all other methods of end-user authentication is a major embarrassment to security researchers. As web technology moves ahead by leaps and bounds in other areas, passwords stubbornly survive and reproduce with every new web site.}{bonneau2012quest}
+
+Password-based authentication is known to be sub-optimal in both its usability and security. Already in 1979 \citet{morris1979password} showed how they were able to crack 81\% of 3000 user generated passwords, using only a small dictionary. A clear impediment is that good security implies a strict and rigours behavior from the end-user, that only a small minority of users are even cognitively capable of~\cite{weirich2001pretty}.
+
+As authentication is merely an enabling task before using a system, many users consider it a hindering, and either unknowingly or purposefully chooses to compromise security for better convenience and usability (such as using the same short password for all services). It is time for a long overdue paradigm shift.\newline
+
+Pervasive Authentication is a research topic, in particular, exploring how to reduce or ease the user-interaction when authenticating, and aims for seamless, but secure authentication. The proof-\textit{of}-concept by \citet{ojala2008wearable} shows how a watch (wearable) can provide an inexpensive, effective, and usable way of authenticating with systems. The user \textit{transparently} authenticates with the system by simply approaching a client. The session is \textit{continuously} kept alive, and as soon as the user leaves the client, the session is autonomously terminated.
+When the watch is put on, it first needs to be unlocked. This is done using the user's fingerprint where after it starts monitoring the wearer's vitals. If the watch is stolen, or in any way removed from the wearer's arm, it locks itself. In this way it provides (seemingly) secure authentication in a perfectly seamless and transparent manner, and shows how usable and effortless authentication can be.
+
+However, much work is still left; first of all the proof-\textit{of}-concept is designed for authenticating with a client machine, while most real-world authentications is in fact with web-services~\cite{hayashi2011diary}. Furthermore no security protocol is utilized, and existing protocols are not suitable. Last but not least, for the concept to mature, there is a need for designing for commodity hardware and services.
+
+\section{Contributions}
+This thesis has two main contributions. First of all we conduct a semi-structured review of several existing designs for pervasive authentication schemes. Based on the review, we put forward a requirement analysis and a design for a modern \gls{cta} scheme. Our design is the first that targets existing commodity hardware, and could realistically be implemented as a mature solution.
+
+Secondly we propose an authentication protocol that can facilitate an implementation of the design. The protocol is formally verified and analyzed using a mixed computational and symbolic model approach. To showcase the feasibility of core features of the design, a prototype is implemented using the protocol.
+
+
+\section{Outline}
+This thesis is divided into three parts: 1) Introduction and Background, 2) Continuous and Transparent Authentication, and 3) Discussion and Conclusion.
+
+The introduction and background introduces and motivates the problem of password-based authentication, and hints to a solution using wearable devices for end-user authentication. Next, relevant related work is presented and reviewed.
+
+The second part presents our proposed design and implementation. The design is divided into two parts: The first part introduces a novel authentication scheme. The second part presents a protocol supporting the design. Lastly a prototype implementation is presented. The third part discusses and concludes on the presented work.
+
+\vfill
+
+\noindent All material from this thesis is available at
+\begin{center}
+\url{https://github.com/cholewa1992/cta}
+\end{center}
+
+\vfill
+
+%The computer changed society in many ways. Especially the shift from shared computers to personal computers as well as the Internet led to the advent of today's digital era. Although the numbers of computers, their computational capabilities and the usage of computer have had a rapid exponential growth, the dusty old way we authenticate with computer systems have remained unchanged for decades.
+
+%Usernames and passwords have their origin from back when multiple users was accessing the same mainframe and the operating systems most important job was handling its different users and their files and programs. With the way we use computers today, and especially because of their now ubiquitous presence in almost everything we do, it is surprising that Password-Based authentication, that was originally designed for such radically different usage, is still the behemoth used practically everywhere.
+
+%\begin{comment}
+%Research have for many years been pointing fingers at Password-Based Authentication as easy to compromise~\cite{morris1979password}, and being extremely user unfriendly~\cite{bardram2005trouble, bonneau2012quest, weirich2001pretty}. 
+%\citet{adams1999users} advocates the need for user-centered design when it comes to design of security mechanisms. In a field study, they investigate user behaviour and authentication practices within organisations that use passwords. Their findings show that stricter password policies does not necessarily make users produce stronger and more secure passwords, but can in fact encourage bad practices, such as writing down passwords on post-it notes or composing passwords of easily acquirable personal details, such as family members names. 
+%Usage pattern such as these, will reduce security instead of improving it, due to how easy it would be for an attacker to acquire or guess the password.
+
+%Another major problem with passwords, is that even if an extraordinary user is cognitively capable of remembering many different, complex and unique passwords, and replacing them regularly, research still shows that users will choose the convenience of short, weak passwords over strong and secure ones, simply to reduce the effort and time required to authenticate.
+%\end{comment}
+%\citet{weirich2001pretty} explains the concept of authentication from a user's perspective as an ``enabling task'', that is only a means to achieve the ``primary task'', which is accessing the protected resource. Thus the authentication process creates an overhead in getting to the ``primary task''. They argue that the willingness for users to behave in accordance with password practices, is small because many users do not recognize the threat of password compromisation as being high enough to outweigh the benefits of being able to quickly type the password and being easier to remember. 
+
+%Pervasive Authentication is a research topic in particular exploring how to reduce or ease the user-interaction when authenticating aiming for seamless, but secure authentication. The proof-of-concept by \citet{ojala2008wearable} shows how a watch (wearable) can provide an inexpensive, effective, and usable way of authenticating with systems. The user \textit{transparently} authenticates with the system by simply approaching a client. The session is \textit{continuously} kept alive, and as soon as the user leaves the client, the session is autonomously terminated.
+%When the watch is put on it first needs to be unlocked. This is done using the users fingerprint where after it starts monitoring the wearers vitals. If the watch is stolen, or in any way removed from the wearers arm, it locks itself. In this way it provides (seemingly) secure authentication in a perfectly seamless and transparent manor, and shows how usable and effortless authentication can be.
+
+%However, much work is still left; first of all the system is designed for authenticating with a client, while most real-world authentications is in fact with web-services~\cite{hayashi2011diary}.
+%Furthermore, no suitable protocol exists for such authentication scheme.
+
+
+%\section{Objectives}
+%Previous work shows that wearable devices offer a both inexpensive and simple way of enabling \gls{cta}. However, work is still needed in either building or adapting a suitable security protocols as well as making \gls{cta} possible with commodity hardware and services.\\
+
+%Therefore this thesis aims to:
+%\begin{enumerate}[label=\textbf{\arabic*$\big)$}]
+%    \item Put forward a requirement analysis and design of a \gls{cta} scheme.
+%    \item Either select or design a suitable protocol for \gls{cta}.
+%    \item Show that the protocol can be used in a commodity hardware implementation of the proposed scheme.
+%\end{enumerate}
+
+
+% \section{Scope and Success Criteria}
+%\section{Method}
+
+%**********************************t*******
+%*****************************************
+%*****************************************
+%*****************************************
+%*****************************************

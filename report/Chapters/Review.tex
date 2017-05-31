@@ -1,0 +1,211 @@
+%************************************************
+\chapter{Pervasive Authentication Schemes}\label{ch:review}
+%************************************************
+
+
+In this chapter, we introduce a semi-structured review through pervasive authentication schemes. We evaluate the schemes, by rating how well they offer different benefits, that we consider relevant for any human-to-computer authentication scheme. The evaluation is based on the comparative evaluation framework for web authentication sch\-emes presented by \citet{bonneau2012quest} (and introduced in the previous chapter). The purpose of this evaluation, is to identify the benefits of pervasive authentication, and highlight potential shortcomings. We evaluate the schemes of both \citet{bardram2003context, ojala2008wearable}. The Pico authentication scheme \cite{stajano2011pico} and passwords have both already been evaluated in the original paper \cite{bonneau2012quest}. The ratings are shown in table~\ref{table:pre_property_table}. 
+
+We have attempted to rate the schemes fairly, by adhering to the property definitions and rating criteria specified by the framework. Additionally, we have attempted to document and describe the rating process in the same way as done in the supplementary technical report \cite{UCAM-CL-TR-817}.
+
+\begin{table}[t]
+\centering
+\begin{wide}
+\resizebox{\linewidth}{!}{
+%\rotatebox{270}{
+\setlength\tabcolsep{1.8pt}
+\begin{tabular}{r|c|cccccccc|cccccc|ccccccccccc}
+
+\multicolumn{2}{c}{} &
+\multicolumn{8}{c}{\textbf{Usability}} &
+\multicolumn{6}{c}{\textbf{Deployability}} &
+\multicolumn{11}{c}{\textbf{Security}}\\
+\multicolumn{27}{c}{}
+\\
+
+& \rot{\textit{Reference}} &
+\rot{\textit{Memorywise-Effortless}} &
+\rot{\textit{Scalable-for-Users}} &
+\rot{\textit{Nothing-to-Carry}} &
+\rot{\textit{Physically-Effortless}} &
+\rot{\textit{Easy-to-Learn}} &
+\rot{\textit{Efficient-to-Use}} &
+\rot{\textit{Infrequent-Errors}} &
+\rot{\textit{Easy-Recovery-from-Loss}} &
+\rot{\textit{Accessible}} &
+\rot{\textit{Negligible-Cost-per-User}} &
+\rot{\textit{Server-Compatible}} &
+\rot{\textit{Browser-Compatible}} &
+\rot{\textit{Mature}} &
+\rot{\textit{Non-Proprietary}} &
+\rot{\textit{Resilient-to-Physical-Observation}} &
+\rot{\textit{Resilient-to-Targeted-Impersonation}} &
+\rot{\textit{Resilient-to-Throttled-Guessing}} &
+\rot{\textit{Resilient-to-Unthrottled-Guessing}} &
+\rot{\textit{Resilient-to-Internal-Observation}} &
+\rot{\textit{Resilient-to-Leaks-from-Other-Verifiers}} &
+\rot{\textit{Resilient-to-Phishing}} &
+\rot{\textit{Resilient-to-Theft}} &
+\rot{\textit{No-Trusted-Third-Party}} &
+\rot{\textit{Requiring-Explicit-Consent}} &
+\rot{\textit{Unlinkable}}  \\ \hline
+
+Passwords & &
+            & %Memorywise-Effortless
+            & %Scalable-for-Users
+\CIRCLE     & %Nothing-to-Carry
+            & %Physically-Effortless
+\CIRCLE     & %Easy-to-Learn
+\CIRCLE     & %Efficient-to-Use
+\Circle     & %Infrequent-Errors
+\CIRCLE     & %Easy-Recovery-from-Loss
+\CIRCLE     & %Accessible
+\CIRCLE     & %Neglible-Cost-per-User
+\CIRCLE     & %Server-Compatible
+\CIRCLE     & %Browser-Compatible
+\CIRCLE     & %Mature
+\CIRCLE     & %Non-Proprietary
+            & %Resilient-to-Physical-Observation
+\Circle     & %Resilient-to-Targeted-Impersonation
+            & %Resilient-to-Throttled-Guessing
+            & %Resilient-to-Unthrottled-Guessing
+            & %Resilient-to-Internal-Observation
+            & %Resilient-to-Leaks-from-Other-Verifiers
+            & %Resilient-to-Phishing
+\CIRCLE     & %Resilient-to-Theft
+\CIRCLE     & %No-Trusted-Third-Party
+\CIRCLE     & %Requiring-Explicit-Consent
+\CIRCLE       %Unlinkable
+\\ \hline
+
+Context-Aware Auth~~& \cite{bardram2003context} &
+\Circle     & %Memorywise-Effortless
+\CIRCLE     & %Scalable-for-Users
+            & %Nothing-to-Carry
+\Circle     & %Physically-Effortless
+\CIRCLE     & %Easy-to-Learn
+\CIRCLE     & %Efficient-to-Use
+\CIRCLE     & %Infrequent-Errors
+            & %Easy-Recovery-from-Loss
+\CIRCLE     & %Accessible
+            & %Neglible-Cost-per-User
+            & %Server-Compatible
+            & %Browser-Compatible
+            & %Mature
+\CIRCLE     & %Non-Proprietary
+\Circle     & %Resilient-to-Physical-Observation
+\CIRCLE     & %Resilient-to-Targeted-Impersonation
+            & %Resilient-to-Throttled-Guessing
+            & %Resilient-to-Unthrottled-Guessing
+\Circle     & %Resilient-to-Internal-Observation
+            & %Resilient-to-Leaks-from-Other-Verifiers
+\Circle     & %Resilient-to-Phishing
+\Circle     & %Resilient-to-Theft
+            & %No-Trusted-Third-Party
+\CIRCLE     & %Requiring-Explicit-Consent
+              %Unlinkable
+\\ \hline
+
+Wearable Auth & \cite{ojala2008wearable} &
+\CIRCLE     & %Memorywise-Effortless
+\CIRCLE     & %Scalable-for-Users
+\Circle     & %Nothing-to-Carry
+\Circle     & %Physically-Effortless
+\CIRCLE     & %Easy-to-Learn
+\CIRCLE     & %Efficient-to-Use
+\CIRCLE     & %Infrequent-Errors
+            & %Easy-Recovery-from-Loss
+\CIRCLE     & %Accessible
+            & %Neglible-Cost-per-User
+            & %Server-Compatible
+            & %Browser-Compatible
+            & %Mature
+\CIRCLE     & %Non-Proprietary
+\CIRCLE     & %Resilient-to-Physical-Observation
+\CIRCLE     & %Resilient-to-Targeted-Impersonation
+\CIRCLE     & %Resilient-to-Throttled-Guessing
+\CIRCLE     & %Resilient-to-Unthrottled-Guessing
+?           & %Resilient-to-Internal-Observation
+?           & %Resilient-to-Leaks-from-Other-Verifiers
+\CIRCLE     & %Resilient-to-Phishing
+\CIRCLE     & %Resilient-to-Theft
+?           & %No-Trusted-Third-Party
+\Circle     & %Requiring-Explicit-Consent
+?             %Unlinkable
+\\ \hline
+
+Pico & \cite{stajano2011pico} &
+\CIRCLE     & %Memorywise-Effortless
+\CIRCLE     & %Scalable-for-Users
+            & %Nothing-to-Carry
+\CIRCLE     & %Physically-Effortless
+            & %Easy-to-Learn
+\Circle     & %Efficient-to-Use
+\Circle     & %Infrequent-Errors
+            & %Easy-Recovery-from-Loss
+            & %Accessible
+            & %Neglible-Cost-per-User
+            & %Server-Compatible
+            & %Browser-Compatible
+            & %Mature
+\CIRCLE     & %Non-Proprietary
+\CIRCLE     & %Resilient-to-Physical-Observation
+\CIRCLE     & %Resilient-to-Targeted-Impersonation
+\CIRCLE     & %Resilient-to-Throttled-Guessing
+\CIRCLE     & %Resilient-to-Unthrottled-Guessing
+\CIRCLE     & %Resilient-to-Internal-Observation
+\CIRCLE     & %Resilient-to-Leaks-from-Other-Verifiers
+\CIRCLE     & %Resilient-to-Phishing
+\Circle     & %Resilient-to-Theft
+\CIRCLE     & %No-Trusted-Third-Party
+\CIRCLE     & %Requiring-Explicit-Consent
+\CIRCLE       %Unlinkable
+\\ \hline
+
+\multicolumn{27}{r}{
+
+\CIRCLE~=~offers the benefit 
+\quad \Circle~=~almost offers the benefit
+\quad ?~=~not known}
+\quad \\
+
+\end{tabular}}
+\end{wide}
+
+\caption[Overview of benefits of related work]{Comparing the benefits of related work in Pervasive Authentication.}
+\label{table:pre_property_table}
+\end{table}
+
+\section{Context-Aware Authentication}
+%\todo[inline]{Revisit this section}
+\citet{bardram2003context} presents a prototype and authentication protocol for secure and usable authentication for physicians in hospitals. The system is comprised of a personal smart-card, that can be inserted into the hospital computers to access the computers, and a context-aware subsystem that as a minimum is location-aware. If the practitioners try to access a computer using their key-card, and their location is the same as the workstations, then they are authenticated without further interaction. If the location differs, then they are asked to type their password.
+
+When a new key-card is initialized it generates a public-private key pair and sends the public key to a central server. The key-card uses a one-way authentication protocol and the user's password is only known to the keycard.
+
+We grant the system \textit{Quasi-Memorywise-Effortless} as the user is still required to remember the keycard password.
+It is \textit{Scalable-for-Users} as the card could easily submit the same public-key to many verifiers.
+It is not \textit{Noting-to-Carry}, although, in the hospital setup where it is applied, the staff is required to carry their identity card, and it could qualify for a \textit{Quasi-Noting-to-Carry} in some scenarios.
+It is both \textit{Easy-to-Learn}, \textit{Efficient-to-Use} and \textit{Infrequent-Errors} (assuming that the context-aware service works most of the time).
+It is not \textit{Easy-Recovery-from-Loss} as a new card needs to be issued, and a new public-private key pair needs to be created and submitted to verifiers.
+
+As it is a prototype, deployability benefits are not well documented. However,  we grant it \textit{Accessible} and \textit{Non-Propritary}.
+The system is not \textit{Negligible-Cost-per-User} as the setup is very infrastructure heavy. It requires all employees to both have a key-card and some RF-`badge' for the context-server to estimate a user's indoor location.
+
+The system is not built to access web services and is, therefore, neither \textit{Browser-Compatible} nor \textit{Server-Compatible}.
+However, it could easily be used for web services by transmitting the users public key to every verifier, or even generate a new key-pair for every verifier. It would however still not be compatible.
+
+On the security aspects, we deem it to be \textit{Quasi-Resilient-to-Physical-Observation} as the user only rarely types the password.
+However, if the key-card is stolen and the password is known, the adversary has full access, and we, therefore, grant it \textit{Quasi-Resilient-to-Theft}.
+It is not \textit{Resilient-to-Phishing} as man-in-the-middle (MITM) attacks are possible.
+It is not  \textit{Resilient-to-Throttled-Guessing} nor \textit{Resilient-to-Unthrottled-Guessing}, however, the adversary would have to steal the key-card to start guessing. It is not \textit{Unlinkable}.
+
+
+\section{Wearable Authentication}
+\citet{ojala2008wearable} presents a prototype for transparent and continuous authentication with workstations. The system is comprised of three components. A ZigBee enabled wearable wrist device that monitors the wearer's vitals, a ZigBee receiver, and the workstation. When the user puts on the watch, it starts to monitor his vitals. The user can now use a fingerprint reader to authenticate with the system. The user remains authenticated for as long, as he is wearing the watch. If he takes off the watch, or his vitals stops, then he will be logged-out after 10 seconds. While the user is authenticated he can approach any workstation that has a receiver, and without further interaction start using the machine. As soon as he leaves the machine -- he is logged out.
+
+We grant the system \textit{Memorywise-Effortless}, \textit{Scalable-for-Users}, \textit{Easy-to-Learn}, \textit{Efficient-to-Use} and \textit{Infrequent-Errors}. We deem it \textit{Quasi-Noth\-ing-to-Carry} as a watch is something that most users always carry, like for some people a smartphone. It is not \textit{Easy-Recovery-from-Loss} as loosing the watch means having to get a new one, that should then be linked to the users existing identities.
+
+As the system, much like ´Context-Aware Authentication' \cite{bardram2003context} is a prototype that is not built for web-services, we grant it the same scores for deployability. 
+
+On the security side it is \textit{Resilient-to-Physical-Observation}, \textit{Resilient-to-Targeted-Impersonation}, \textit{Resilient-to-Throttled-Guessing}, \textit{Resilient-to-Un\-throttled-Guessing} and \textit{Resilient-to-Theft}. It is \textit{Quasi-Requiring-Explicit-Consent} as the user only gives explicit consent once when using the fingerprint reader.
+Other security aspects are not known due to the simplicity of the prototype and are therefore left out of consideration, although we deem them feasible to include.
+

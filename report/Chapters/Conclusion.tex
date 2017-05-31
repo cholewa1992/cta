@@ -1,0 +1,19 @@
+%************************************************
+\chapter{Conclusion}\label{ch:conclusion}
+%************************************************
+
+% Motivation and topic
+The motivation for this thesis has been to identify or propose a replacement to password-based authentication. Password-based authentication is the most commonly used end-user authentication mechanism, although research concludes it to be insecure and user-unfriendly.
+Within the field of pervasive computing, the search for a more user-friendly and unobtrusive authentication method, has long been a topic of research, as the amount of computers a user interacts (and eventually authenticates) with, on a daily basis, is steadily increasing. 
+
+% What we learned from related work
+In our work we reviewed and analyzed some existing and relevant pervasive authentication schemes, to gain insights into what works well, and what needs improvement. The solutions we surveyed \cite{stajano2011pico, ojala2008wearable, bardram2003context} are research solutions that are not mature, and all lack a proper implementation. Another observation is that existing solutions tend to rely on dedicated and expensive hardware to facilitate the authentication and furthermore place a primary focus on usability aspects, and prioritize security and cryptographic considerations to a lesser extent. 
+
+% What have we done in this project?
+Based on the review, this thesis presents a new password-less authentication scheme, designed to rely on commodity hardware (wearables), and includes and extends upon some of the well working concepts from existing work, such as user awareness, continuous and transparent authentication, in order to achieve a high degree of both usability and security. We describe a well specified and formally verified authentication protocol, that can facilitate the scheme in a secure manner, and provide a thorough documentation of the verification process along with a security analysis of possible vulnerabilities and attacks. 
+
+Based on the design, a working prototype is developed, that serves to demonstrate successful rounds of continuous authentication using our specified protocol. The developed prototype certainly fulfills the goal of avoiding dedicated and special purpose technology as it requires only a Bluetooth-compatible smartphone, smartwatch, and a browser to be used. While a lot of work is still needed, if the authentication scheme proposed in this thesis was to be used in an actual production setting, we claim that our prototype showcases that it is actually feasible to implement the envisioned scheme in practice. 
+
+% Comparing with passwords, and rounding off.
+As the security and usability flaws of passwords have become more widely acknowledged, not only in the security community, but in general, it still remains a major challenge to find a suitable replacement, as current client and server technology is so bound to the password paradigm. 
+Obtaining the incredibly low cost, and the benefits of an already well-established infrastructure, offered by passwords is very hard to compete with. Evaluating our presented scheme, we are convinced that it offers way more usability and security than compared to passwords, which should hopefully also be obvious from the documentation provided in this report. We modestly hope, that the scheme and protocol design presented in this thesis, can bring us a little closer to a password-less world, or at the very least shed light on the challenges involved in designing an authentication scheme that must be both usable, secure and deployable. 

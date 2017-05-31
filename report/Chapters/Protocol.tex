@@ -1,0 +1,250 @@
+%************************************************
+\chapter{Protocol Design}\label{ch:protocol}
+%************************************************
+
+
+% What is the goals of an adversary?
+% - Be able to forge authentication
+% - Be able to link different identities to the same user.
+% - Be able to use/hijack an active session
+
+
+In the previous chapter, we present a design for a \gls{cta} authentication scheme. In this chapter we will present a protocol, which is simply a sequence of well-chosen messages, that can support this scheme. In this chapter, we will only highlight a few important properties from the previous chapter in regards to certain choices, and will then later evaluate which properties the proposed protocol achieves.
+
+\section{Definition of Authentication}
+
+So far we have not clearly defined what `authentication' actually entails. In his well-renowned article ``A Hierarchy of Authentication Specifications'' \citet{lowe1997hierarchy} puts forward the following definition:
+
+\begin{definition}[Injective Agreement]
+We say that a protocol guarantees to an initiator $A$ agreement with a responder $B$ on a set of data items $ds$ if, whenever $A$ (acting as initiator) completes a run of the protocol, apparently with responder $B$ , then $B$ has previously been running the protocol, apparently with $A$, and $B$ was acting as responder in his run, and the two agents agreed on the data values corresponding to all the variables in $ds$, and each such run of $A$ corresponds to a unique run of $B$.
+\end{definition}
+
+This definition infer that if two parties agree on a set of data (or evidence of identity), and if there is a one-to-one relationship between the protocol run at the responder and verifier, then they achieve (injective) agreement, and thus the responder authenticates with the verifier.
+
+\section{Design Rationale}
+Our design inspires from this definition, and effectively, the \gls{server} $S$, will on request from the \gls{client} $C$, issue a fresh challenge. If the client can reply with a proper response to the challenge then it should be authenticated for a given period of time. Let us consider a simple example in which the \gls{server} encrypts a random nonce with the public-key of the \gls{client}, and sends the cipher to the client. The client then decrypts the cipher and responds to the challenge with the recovered nonce.
+{\setlength{\mathindent}{0cm}
+\begin{align}
+    \tag{message 1} && S \rightarrow C &: enc(n,pk_c)\\
+    \tag{message 2} && C \rightarrow S &: n
+\end{align}}
+
+Only an actor in possession of $sk_c$ would be able to recover the correct answer, and thus presenting $n$, serves as evidence of knowing $sk_c$. This can be used to authenticate if the server links the public key to a user-identity. This will serve as a starting point for this protocol. However, a few design features from the previous chapter needs to be considered:
+\begin{itemize}
+    \item The \gls{client} should ask the \gls{authenticator} for `permission' to authenticate.
+    \item The \gls{authenticator} should only give permission if unlocked; thus in range of the \gls{sibling}.
+    \item The \gls{client} should not be exposed to any piece of information that could be used in a later successful round of authentication. 
+    \item  Hijacking an active session or token should not give an \gls{adversary} unauthorized access for longer than the session is actively kept alive by the \gls{server} and \gls{authenticator}.
+\end{itemize}
+
+In the design, we mention that the \gls{authenticator} can be in a state of either unlocked, locked or lockdown. In practice, we take a different approach to implementing these states. As we envision using general-purpose commodity platforms such as e.g. iOS and Android devices, compromised devices are a concern that should be inherently designed for, and solely trusting a single device to uphold these states is therefore not an option.
+
+\subsection{Distributed Authentication}
+
+
+To ensure that \gls{authenticator} and \gls{sibling} are always involved in an authentication run, the unlocked state will in practice be implemented by forcing the \gls{authenticator} and \gls{sibling} to collaborate, in computing the response to an authentication challenge. If communication between \gls{authenticator}, \gls{sibling} and \gls{client} are forced onto a local channel (such as Bluetooth), then authentication is only possible when all three devices are in each others proximity.\\
+
+In comparison, Pico~\cite{stajano2011pico} functions by having a main device, the Pico, that is the users key-store. The key-store is encrypted with a \textit{$k$-out-of-$n$} threshold encryption system. This means that at least $k$ siblings (small wearable tokens) must be in its vicinity for it to unlock. On request from the Pico, the siblings send their key-share, allowing the Pico to unlock its key-store. An assumption is made on the Pico, that it periodically `forgets' the key, thus forcing it to continuously interact with its siblings.
+
+We see this as a problem because if the Pico is compromised in the unlocked state, then \textit{all} of the user's services are compromised. In the original paper, it is assumed that an adversary is not capable of compromising the Pico in the unlocked state. This is an unrealistic assumption when using general-purpose devices.
+
+The rationale behind having a central unit holding all keys, and having peripheral devices unlocking, instead of having all devices actively participate, was taken with consideration to the technical limitations of wearables~\cite{stannard2012good}. However, since the Pico was proposed in 2011, these limitations are diminishing, and modern wearables are now fully capable of making cryptographic calculations without draining their battery.\\
+
+The collaboration between \gls{authenticator} and \gls{sibling} can be achieved with `secure multiparty computations' (MPC). MPC entails a group of agents jointly computing a function, such as decrypting a cipher, without revealing anything about their individual input to the function. Furthermore, only with full participation from all actors will the output of the function be meaningful. This means that both devices would have to be compromised, for an adversary to be able to obtain the secrets needed to compromise the user's services. In practice, MPC can be implemented by utilizing a partial crypto system.\\
+
+
+
+
+
+\begin{comment}
+\paragraph{Security Goals}
+\begin{itemize}
+
+    \item An adversary should not be able to forge evidence of identity without compromising the secrets of both \gls{authenticator} and \gls{sibling}.
+    
+    \item Hijacking an active session or token should not give the \gls{adversary} unauthorized access for longer than the session is actively kept alive by the \gls{server} and \gls{authenticator}.
+    
+\end{itemize}
+\end{comment}
+
+\section{Partial Crypto Systems}
+
+A partial crypto systems is a system in which multiple actors have to collaborate to encrypt and decrypt messages. Such systems are useful because they ensure that even if one of the actors is compromised, then the system is not compromised. Many such systems exists, but in this section we will present Distributed ElGamal, which is a partial crypto system~\cite{brandt2005efficient}.
+
+
+\paragraph{ElGamal Crypto System}
+
+ElGamal is a probabilistic and homomorphic public-key crypto system based on the Diffie-Hellman assumption. ElGamal is secure against \Glspl{cpa} (\acrshort{cpa}), if the Decisional Diffie–Hellman (DDH) problem is hard~\cite[page 400]{katz2014introduction}.
+
+Using the cyclic prime order groups, as defined in section~\ref{par:cyclic}, we can define ElGamal in the following way:
+
+\begin{itemize}
+    \item \textbf{Gen:} on input $1^n$ run $\mathcal{G}(1^n)$ to obtain a cyclic group $\langle \mathbb{G},q,g \rangle$. Then choose a uniform $x \in \mathbb{Z}_q$ and compute $y := g^x$. Then output the public-key $\langle \mathbb{G},q,g,y \rangle$ and the private-key $\langle \mathbb{G},q,g,x \rangle$
+    
+    \item \textbf{Enc:} on input of a public-key and a message $m \in \mathbb{G}$, choose a uniform $r \in \mathbb{Z}_q$ and output the ciphertext $c := ( my^r, g^r )$.
+    
+    %\begin{align*}
+    %    && \langle m\cdot y^r, g^r \rangle
+    %\end{align*}
+    
+    \item \textbf{Dec:} on input of a private-key and a ciphertext $c = ( \alpha, \beta )$, output the message $m := \alpha / \beta^x$.
+    
+    %\begin{align*}
+    %    && m := \alpha / \beta^x
+    %\end{align*}
+\end{itemize}
+
+\paragraph{Distributed ElGamal}\label{sec:deg}
+
+The distributed variant of ElGamal leverages that the original crypto system is homomorphic. Although the system is homomorphic over both message and keys for both encryption and descryption, the following is focused on homomorphism over the keys for decryption\footnote{For some set of operators `$+$' and `$\times$'}. 
+{\setlength{\mathindent}{0cm}
+\begin{align*}
+&&    Dec(c,sk_1) \times Dec(c,sk_2) = Dec(c,sk_1 + sk_2)
+\end{align*}}\vspace{-1em}
+
+Let each participating actor $i$ in the distributed system generate an ElGamal key-pair $( pk_i, sk_i )$, using the same cyclic group $\langle \mathbb{G}, q, g \rangle$, by choosing an uniform $x_i \in \mathbb{Z}_q$ and calculating $y_i = g^{x_i}$~\cite{brandt2005efficient}. The joint public and private-key is now given as: 
+{\setlength{\mathindent}{0cm}
+\begin{align*}
+&& y = \prod^n_{i=1} y_i && x = \sum^n_{i=1} x_i
+\end{align*}}
+
+An encrypted message $Enc(m,pk) \rightarrow ( \alpha, \beta )$ can be jointly decrypted by each participant calculating $\beta^{x_i}$. The message can then be recovered as:
+{\setlength{\mathindent}{0cm}
+\begin{align*}
+&&    m := \frac{\alpha}{\prod^n_{i=1} \beta^{x_i}} = \frac{\alpha}{\beta^{x}}
+\end{align*}}
+
+The advantage of this is that the computation and sharing of $\beta^{x_i}$, following the DDH assumption, does not leak any information about the private-keys. Neither does the shares leak any information about the encrypted message before all shares are combined. We define the new operations as:
+\begin{itemize}
+
+    \item \textbf{Gen':} on input of a cyclic group $\langle \mathbb{G}, q, g \rangle$, choose a uniform $x \in \mathbb{Z}_q$ and calculate $y = g^{x}$. Then output the public-key $\langle \mathbb{G},q,g,y \rangle$ and the private-key $\langle \mathbb{G},q,g,x \rangle$
+
+    \item \textbf{Dec':} on input of a private-key and a ciphertext $c = ( \alpha, \beta )$, output the partial decryption $c' := ( \alpha, \beta^{x_i} )$
+    
+    \item \textbf{Combine:} on input of two partially decrypted ciphertexts $c'_1 = ( \alpha, \beta^{x_1} )$ and $c'_2 = ( \alpha, \beta^{x_2} )$\marginpar{notice that the $\alpha$'s must match}, output
+    {\setlength{\mathindent}{0cm} 
+    \begin{align*}
+    && c' := \left( \alpha, \beta^{x_1} \cdot \beta^{x_2} \right) = \left( \alpha, \beta^{{x_1}+{x_2}} \right)
+    \end{align*}}\vspace{-2em}
+    
+    \item \textbf{Recover:} on input of a partially decrypted ciphertext $c' = ( \alpha, \beta^x )$, output the message $m := \alpha / \beta^x$
+    
+\end{itemize}
+
+We denote the recovery of a message from combining partially decrypted ciphers as $m := Dec'(\cdot) \times Dec'(\cdot)$. Furthermore, we denote the product of public-keys as $pk := pk_1 \times pk_2$.
+
+\section{The Protocol}
+
+Two steps of the protocol has to be defined. A \gls{registration} and \gls{authentication} step. The purpose of the registration step is to establish a set of shared knowledge. The purpose of the authentication step is to provide the \gls{server} with evidence, and for the \gls{server} to be able to verify the authenticity of the evidence based on the knowledge acquired during the registration. The proposed protocol builds on the Distributed ElGamal crypto system as presented in the previous section.
+
+
+\subsection{Registration}
+
+The registration is initiated by the \gls{client} (and thus the end-user) by sending a message to the \gls{authenticator} with a universally unique user-id (such as a uuid\footnote{See \url{https://en.wikipedia.org/wiki/Universally_unique_identifier}}). The \gls{client} might have asked the \gls{server} in advance to issue this id based on some data such as a username. The \gls{authenticator} then forwards the message to the \gls{sibling} and starts computing a new Distributed ElGamal key-pair. The \gls{sibling} also computes a new Distributed ElGamal key-pair and sends its public-key to the \gls{authenticator}. The \gls{authenticator} now combines the keys to a joint public-key and sends it back to the \gls{client}. Lastly the \gls{client} sends the new public-key to the server along with the user-id. This is shown in figure~\ref{msc:register}.
+
+\begin{figure}[bth]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{msc}{Registration}
+
+\setlength{\instdist}{1.5cm}
+\setlength{\actionwidth}{3cm}
+
+\declinst{as}{}{$As$} 
+\declinst{a}{}{$A$} 
+\declinst{c}{}{$C$}
+\declinst{s}{}{$S$} 
+
+\nextlevel
+\mess{$username$}{c}{s}
+\nextlevel[2]
+\mess{$id$}{s}{c}
+\nextlevel
+\mess{$id$}{c}{a}
+\nextlevel
+\mess{$id$}{a}{as}
+\nextlevel
+\action{Generate $( pk_{A}, sk_{A} )$}{a}
+\action{Generate $( pk_{As}, sk_{As} )$}{as}
+\nextlevel[4]
+\mess{$pk_{As}$}{as}{a}
+\nextlevel
+\action{$pk = pk_A \times pk_{As}$}{a}
+\nextlevel[4]
+\mess{$id, pk$}{a}{c}
+\nextlevel
+\mess{$id, pk$}{c}{s}
+\nextlevel
+
+\end{msc}}
+\caption[Registration sequence diagram]{The sequence of messages involved in a successful registration.}
+\label{msc:register}
+\end{figure}
+
+\subsection{Authentication}
+Authentication is initiated by the \gls{client} by sending an authentication request with a user-id to the \gls{server}. The \gls{server} responds with a challenge $c \leftarrow enc(n,pk)$, where $pk$ is the public-key corresponding to the user-id, and $n$ is an arbitrary nonce in $\mathbb{G}$. After sending the challenge the \gls{server} starts a timer $T$. The challenge is forwarded to the \gls{authenticator} and \gls{sibling} which both partly decrypts the challenge. The \gls{sibling} sends its partial decryption to the \gls{authenticator} which combines and recovers the nonce and sends it back to the \gls{server}. If the received nonce is correct then the \gls{server} issues a token to the client, valid for a given duration (in regards to the timer T). Before the token expires, the process is repeated to continuously keep the session active. This is shown in figure~\ref{msc:auth}.
+
+\begin{figure}[bh]
+\centering
+\resizebox{\linewidth}{!}{
+\begin{msc}{Authentication}
+
+\setlength{\instdist}{1.5cm}
+\setlength{\actionwidth}{3cm}
+
+\declinst{as}{$\left(sk_{As}\right)$}{$As$} 
+\declinst{a}{$\left(sk_{A}\right)$}{$A$} 
+\declinst{c}{}{$C$}
+\declinst{s}{$\left(pk\right)$}{$S$} 
+
+\nextlevel
+\mess{$id$}{c}{s}
+\nextlevel
+\inlinestart[1.75cm][1.75cm]{exp1}{loop}{as}{s}
+\nextlevel
+\action{$c \leftarrow enc(n,pk)$}{s}
+\nextlevel[3]
+\settimer[r]{T}{s}
+\nextlevel
+\mess{$c$}{s}{c}
+\nextlevel
+\mess{$c, id $}{c}{a}
+\nextlevel
+\mess{$c, id$}{a}{as}
+\nextlevel
+\action{$c'_{As} = Dec'(c,sk_{As})$}{as}
+\action{$c'_{A} = Dec'(c,sk_{A})$}{a}
+\nextlevel[5]
+\mess{$c'_{As}$}{as}{a}
+\nextlevel
+\action{$n' = c'_A \times c'_{As}$}{a}
+\nextlevel[3]
+\mess{$n'$}{a}{c}
+\nextlevel
+\mess{$n'$}{c}{s}
+\nextlevel
+\action{if $n \stackrel{?}{=} n'$ then proceed}{s}
+\nextlevel[5]
+\mess{$token$}{s}{c}
+\nextlevel
+\inlinestart[2.75cm][1.5cm]{exp2}{while $T < x$}{c}{s}
+\nextlevel[2]
+\mess*{$request, token$}{c}{s}
+\nextlevel[2]
+\mess*{$data$}{s}{c}
+\nextlevel
+\inlineend{exp2}
+\nextlevel
+\stoptimer[r]{T}{s}
+\nextlevel
+\inlineend{exp1}
+\end{msc}}
+\caption[Authentication sequence diagram]{The sequence of messages involved in a successful authentication.}
+\label{msc:auth}
+\end{figure}
+
+
+%*****************************************
+%*****************************************
+%*****************************************
+%*****************************************
